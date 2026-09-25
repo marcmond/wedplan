@@ -60,4 +60,15 @@ C'è anche **Esporta invitati per Excel** (`.csv`).
 
 ## Aggiornare l'app
 
-Carica i file modificati su GitHub e in `sw.js` aumenta la versione (`matrimonio-v2` → `matrimonio-v3`). I dati non vengono toccati.
+1. Modifica i file e, **ogni volta**, aumenta il numero di versione in due punti:
+   - in `sw.js`: `const CACHE = 'matrimonio-v3';` → `matrimonio-v4`
+   - in `index.html`: `const APP_VERSION='3';` → `'4'`
+2. Carica i file modificati su GitHub.
+
+Le app installate e aperte controllano gli aggiornamenti ogni 5 minuti e ogni volta che torni sull'app.
+Quando c'è una versione nuova compare in basso **"È disponibile una nuova versione dell'app"**: tocca **Aggiorna** e l'app si ricarica.
+Puoi anche controllare subito da **Dati e backup → Cerca aggiornamenti**. Il numero di versione è indicato in fondo alla stessa finestra.
+
+- I dati non vengono toccati.
+- GitHub Pages può impiegare fino a circa 10 minuti a distribuire i file nuovi, quindi l'avviso può arrivare con un po' di ritardo.
+- Se dimentichi di cambiare la versione, l'app se ne accorge lo stesso quando cambia `index.html`. Icone e font però si aggiornano solo con il cambio di versione in `sw.js`.

@@ -225,6 +225,11 @@ button{cursor:pointer}
 .calc{background:var(--accent-soft);color:var(--ink);border-radius:10px;padding:10px 12px;font-size:13px;font-variant-numeric:tabular-nums}
 
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;z-index:80;max-width:calc(100% - 32px);box-shadow:var(--shadow)}
+.updbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:45;width:calc(100% - 32px);max-width:520px;background:var(--surface);color:var(--ink);border:1px solid var(--accent);border-radius:14px;box-shadow:0 10px 30px rgba(20,40,35,.22);padding:10px 10px 10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between;font-size:14px;font-weight:500}
+.updbar .ub-act{display:flex;gap:6px;margin-left:auto}
+body.has-update .fab{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+body.has-update .toast{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+@media (min-width:560px){body.has-update .fab,body.has-update .toast{bottom:calc(76px + env(safe-area-inset-bottom,0px))}}
 .fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:10;border-radius:999px;padding:14px 20px;box-shadow:0 8px 24px rgba(20,40,35,.25)}
 @media (min-width:760px){.fab{display:none}}
 @media (prefers-reduced-motion:no-preference){.modal{animation:up .18s ease-out}@keyframes up{from{transform:translateY(12px);opacity:.6}to{transform:none;opacity:1}}}
@@ -661,7 +666,54 @@ let installEvt=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault(); installEvt=e; const b=$('installBtn'); if(b) b.hidden=false;});
 window.addEventListener('appinstalled',()=>{installEvt=null; const b=$('installBtn'); if(b) b.hidden=true; toast('App installata');});
 async function doInstall(){ if(!installEvt)return; installEvt.prompt(); try{await installEvt.userChoice;}catch(e){} installEvt=null; $('installBtn').hidden=true; }
-if('serviceWorker' in navigator && location.protocol.startsWith('http')){ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
+
+/* ---------- aggiornamenti dell'app ---------- */
+// Tieni questo numero uguale a quello in sw.js ('matrimonio-v3' -> '3').
+const APP_VERSION='3';
+let swReg=null, updateRequested=false, pageHash='';
+async function hashText(t){ try{ const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)); return Array.from(new Uint8Array(b)).slice(0,8).map(x=>x.toString(16).padStart(2,'0')).join(''); }catch(e){ return t.length+':'+t.slice(-200); } }
+async function fetchPageHash(){ const r=await fetch('./index.html?check='+Date.now(),{cache:'no-store'}); if(!r.ok) throw 0; return hashText(await r.text()); }
+function showUpdate(){
+  if($('updBar')) return;
+  const d=document.createElement('div'); d.id='updBar'; d.className='updbar'; d.setAttribute('role','status');
+  d.innerHTML='<span>È disponibile una nuova versione dell’app.</span><div class="ub-act"><button class="btn small ghost" id="updLater">Più tardi</button><button class="btn small primary" id="updGo">Aggiorna</button></div>';
+  document.body.appendChild(d); document.body.classList.add('has-update');
+  $('updLater').onclick=()=>{ d.remove(); document.body.classList.remove('has-update'); };
+  $('updGo').onclick=applyUpdate;
+}
+async function checkUpdate(){
+  if(!navigator.onLine||document.visibilityState!=='visible') return false;
+  if(swReg){
+    try{ await swReg.update(); }catch(e){}
+    const w=swReg.installing;
+    if(w) await new Promise(res=>{ const t=setTimeout(res,10000); w.addEventListener('statechange',()=>{ if(w.state!=='installing'){ clearTimeout(t); res(); } }); });
+    if(swReg.waiting&&navigator.serviceWorker.controller){ showUpdate(); return true; }
+  }
+  // Controllo di riserva: la pagina è cambiata anche se sw.js no (versione dimenticata).
+  if(pageHash){ try{ if(await fetchPageHash()!==pageHash){ showUpdate(); return true; } }catch(e){} }
+  return false;
+}
+function applyUpdate(){
+  if($('modalRoot').innerHTML){ toast('Salva o chiudi prima la finestra aperta, poi tocca Aggiorna.'); return; }
+  const b=$('updGo'); if(b){ b.disabled=true; b.textContent='Aggiornamento…'; }
+  updateRequested=true;
+  const w=swReg&&swReg.waiting;
+  if(w){ w.postMessage('skipWaiting'); setTimeout(()=>location.reload(),4000); }   // riserva se il cambio non arriva
+  else location.reload();
+}
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{ if(updateRequested) location.reload(); });
+  window.addEventListener('load',async()=>{
+    try{
+      swReg=await navigator.serviceWorker.register('sw.js');
+      if(swReg.waiting&&navigator.serviceWorker.controller) showUpdate();
+      swReg.addEventListener('updatefound',()=>{ const w=swReg.installing; if(w) w.addEventListener('statechange',()=>{ if(w.state==='installed'&&navigator.serviceWorker.controller) showUpdate(); }); });
+    }catch(e){}
+    try{ pageHash=await fetchPageHash(); }catch(e){}
+    setInterval(checkUpdate,5*60*1000);
+    document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') checkUpdate(); });
+  });
+}
 
 function dataMenu(){
   const lb=S.settings&&S.settings.lastBackup;
@@ -688,7 +740,7 @@ function dataMenu(){
     '<label class="btn" for="mImpF" style="justify-content:center;cursor:pointer">Ripristina da backup…</label><input type="file" id="mImpF" accept=".json,application/json" hidden>'+
     '<button class="btn" id="mCsv">Esporta invitati per Excel (.csv)</button>'+
     (installEvt?'<button class="btn" id="mInst">Installa l’app su questo dispositivo</button>':'')+
-    '</div><div class="mfoot"><div class="right"><button class="btn" data-act="close">Chiudi</button></div></div>');
+    '</div><div class="mfoot"><span class="hint">Versione '+APP_VERSION+'</span><div class="right"><button class="btn" id="mUpd">Cerca aggiornamenti</button><button class="btn" data-act="close">Chiudi</button></div></div>');
   const on=(id,fn)=>{const el=$(id); if(el) el.onclick=fn;};
   on('mCidSave',async()=>{ const v=$('mCid').value.trim(); if(!/\.apps\.googleusercontent\.com$/.test(v)){toast('Il Client ID deve finire con .apps.googleusercontent.com');return;} SY.clientId=v; saveSync(); const ok=await initGIS(); if(!ok) toast('Impossibile contattare Google: controlla la connessione.'); dataMenu(); });
   on('mConnect',()=>{ closeModal(); requestToken(true); });
@@ -698,6 +750,7 @@ function dataMenu(){
   on('mExp',()=>exportBackup().catch(()=>toast('Esportazione non riuscita.')));
   on('mCsv',exportCSV);
   on('mInst',()=>{closeModal(); doInstall();});
+  on('mUpd',async()=>{ if(!navigator.onLine){toast('Sei offline: collegati a internet per cercare aggiornamenti.');return;} const b=$('mUpd'); b.disabled=true; b.textContent='Controllo…'; const found=await checkUpdate()||!!$('updBar'); if(found) closeModal(); else { b.disabled=false; b.textContent='Cerca aggiornamenti'; toast('Hai già l’ultima versione ('+APP_VERSION+').'); } });
   $('mImpF').onchange=e=>{const f=e.target.files&&e.target.files[0]; e.target.value=''; if(f) importBackup(f);};
 }
 
