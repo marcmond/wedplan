@@ -43,6 +43,13 @@ Se non vuoi incollare il Client ID su ogni dispositivo, scrivilo in `index.html`
 
 ---
 
+## Sposi e categorie
+
+- Gli **sposi** sono sempre in lista: due partecipanti adulti, sempre presenti, contati anche nei costi. Nomi, data e luogo si modificano toccando il titolo in alto.
+- Ogni invitato può avere una **categoria** (es. Famiglia sposa, Amici, Colleghi). "Sposi" è fissa e riservata ai due sposi. Le altre si creano dalla scheda dell'invitato (**+ Nuova categoria…**) o da **Gestisci categorie**, dove puoi anche rinominarle o eliminarle.
+- Il +1 e i figli prendono in automatico la categoria dell'invitato a cui sono collegati.
+- Il riquadro **Risposte per categoria** mostra per ogni gruppo quanti sono presenti, in attesa, in forse o non presenti. Tocca un pezzo della barra per vedere sotto i nomi di quelle persone (tocca un nome per aprirne la scheda); tocca il nome della categoria per filtrare la lista.
+
 ## Come funziona la sincronizzazione
 
 - Su Drive l'app crea la cartella **Regia del Matrimonio** con `dati.json` e le foto degli invitati.
@@ -61,8 +68,8 @@ C'è anche **Esporta invitati per Excel** (`.csv`).
 ## Aggiornare l'app
 
 1. Modifica i file e, **ogni volta**, aumenta il numero di versione in due punti:
-   - in `sw.js`: `const CACHE = 'matrimonio-v3';` → `matrimonio-v4`
-   - in `index.html`: `const APP_VERSION='3';` → `'4'`
+   - in `sw.js`: `const CACHE = 'matrimonio-v5';` → `matrimonio-v6`
+   - in `index.html`: `const APP_VERSION='5';` → `'6'`
 2. Carica i file modificati su GitHub.
 
 Le app installate e aperte controllano gli aggiornamenti ogni 5 minuti e ogni volta che torni sull'app.

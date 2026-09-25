@@ -1,6 +1,6 @@
 // Quando pubblichi modifiche aumenta la versione qui E in index.html (APP_VERSION),
 // così le app aperte mostrano "Nuova versione disponibile".
-const CACHE = 'matrimonio-v3';
+const CACHE = 'matrimonio-v5';
 const SHELL = ['./', './index.html', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png',
   './fonts/figtree-latin-400-normal.woff2', './fonts/figtree-latin-500-normal.woff2', './fonts/figtree-latin-600-normal.woff2',

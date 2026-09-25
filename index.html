@@ -98,6 +98,56 @@ button{cursor:pointer}
 .btn.danger.solid{background:var(--st-assente);color:#fff;border-color:var(--st-assente)}
 
 /* Headcount panel */
+.catsum{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px 16px 12px;margin-top:14px}
+.catsum-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.catsum-head h3{margin:0;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-bottom:10px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.sw{width:10px;height:10px;border-radius:3px;display:inline-block;flex:0 0 auto}
+.sw-presente{background:var(--st-presente)}.sw-invitato{background:var(--st-invitato)}.sw-forse{background:var(--st-forse)}.sw-assente{background:var(--st-assente)}
+.crow{display:block;width:100%;text-align:left;background:none;border:0;border-radius:0;border-top:1px solid var(--line);padding:10px 0;font:inherit;color:inherit}
+.crow:first-of-type{border-top:0}
+.crow.total{padding-top:2px}
+.cname2.link{background:none;border:0;padding:0;font:inherit;font-weight:600;color:inherit;cursor:pointer;text-align:left}
+.cname2.link:hover{color:var(--accent);text-decoration:underline}
+.sbar i{cursor:pointer}
+.sbar i:hover{filter:brightness(1.12)}
+.sbar i.on{outline:2px solid var(--ink);outline-offset:1px;position:relative;z-index:1}
+.sbar i:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sbar{overflow:visible}
+.segpop{position:relative;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:10px 12px 8px;margin:10px 0 8px}
+.segpop::before{content:"";position:absolute;top:-7px;left:clamp(12px,var(--x,50%),calc(100% - 24px));width:12px;height:12px;background:var(--surface-2);border-left:1px solid var(--line);border-top:1px solid var(--line);transform:translateX(-50%) rotate(45deg)}
+.segpop-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;font-size:13px;font-weight:600}
+.segpop-head .x{background:none;border:0;color:var(--muted);font-size:18px;line-height:1;padding:2px 6px;border-radius:6px}
+.segpop-head .x:hover{color:var(--ink);background:var(--line)}
+.segpop ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:2px 12px}
+.segpop li{display:flex;align-items:baseline;gap:6px;min-width:0}
+.segpop li button{background:none;border:0;padding:3px 0;font:inherit;font-size:14px;color:var(--ink);text-align:left;overflow-wrap:anywhere}
+.segpop li button:hover{color:var(--accent);text-decoration:underline}
+.segpop li small{color:var(--muted);font-size:12px;white-space:nowrap}
+.crow.sel{background:var(--accent-soft);border-radius:10px;padding-inline:10px;margin-inline:-10px;width:calc(100% + 20px);border-top-color:transparent}
+.crow.sel .cname2{color:var(--accent)}
+.crow-top{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.cname2{font-weight:600}
+.crow.total .cname2{font-weight:700}
+.cconf{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.cconf b{color:var(--ink)}
+.sbar{display:flex;gap:2px;height:12px;margin:7px 0 6px;border-radius:4px;overflow:hidden;background:transparent}
+.sbar i{display:block;height:100%;min-width:3px}
+.sbar i:first-child{border-radius:4px 0 0 4px}.sbar i:last-child{border-radius:0 4px 4px 0}.sbar i:only-child{border-radius:4px}
+.sbar.empty{background:var(--line)}
+.cnums{display:flex;gap:4px 12px;flex-wrap:wrap;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.cnums span{display:inline-flex;align-items:center;gap:4px}
+.cnums b{color:var(--ink);font-weight:600}
+.tip{position:fixed;z-index:70;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12px;padding:6px 9px;border-radius:8px;max-width:240px;box-shadow:var(--shadow)}
+.st-fixed{background-image:none;padding-right:12px;cursor:default;display:inline-block}
+.tag.cat{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.tag.spouse{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.catlist{display:grid;gap:8px}
+.catline{display:flex;gap:8px;align-items:center}
+.catline input{flex:1;min-width:0;border:1px solid var(--line);background:var(--surface-2);border-radius:10px;padding:9px 12px}
+.catline .cnt{font-size:12px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.catline.fixed{padding:6px 2px;font-weight:600}
 .heads{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
 .heads table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 .heads th,.heads td{padding:12px 14px;text-align:right}
@@ -254,12 +304,14 @@ body.has-update .toast{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
   <!-- INVITATI -->
   <section id="panel-invitati" hidden>
     <div class="heads" id="heads"></div>
+    <div class="catsum" id="catsum"></div>
     <div class="section-head">
       <h2>Lista invitati</h2>
       <button class="btn primary" data-act="new-guest">+ Aggiungi invitato</button>
     </div>
     <div class="toolbar">
       <input class="search" id="gSearch" type="search" placeholder="Cerca per nome o cognome" autocomplete="off">
+      <select class="sel" id="gCat" aria-label="Filtra per categoria"></select>
     </div>
     <div class="chips" id="gChips" style="margin-bottom:14px"></div>
     <div class="groups" id="groups"></div>
@@ -340,7 +392,7 @@ const eur=n=>EUR.format(Math.round((n||0)*100)/100);
 /* ---------- stato ---------- */
 const S={guests:{},todos:{},costs:{},settings:{}};
 let mode='loading';
-const ui={tab:'invitati',gSearch:'',gStatus:'',tFilter:'open',tOwner:''};
+const ui={tab:'invitati',gSearch:'',gStatus:'',gCat:'',pop:null,tFilter:'open',tOwner:''};
 try{const t=localStorage.getItem('mx-tab'); if(t) ui.tab=t;}catch(e){}
 const h0=(location.hash||'').slice(1); if(['invitati','cose','costi'].includes(h0)) ui.tab=h0;
 
@@ -387,7 +439,39 @@ async function put(coll,id,data){
   try{await idbPut(coll,id,v);}catch(e){toast('Salvataggio non riuscito: spazio sul dispositivo insufficiente?'); throw e;}
   markDirty();
 }
+const SPOUSE_IDS=['sposo-1','sposo-2'];
+const isSpouse=g=>!!g&&g.role==='spouse';
+function spouses(){ return SPOUSE_IDS.map(id=>S.guests[id]).filter(Boolean); }
+// Gli sposi esistono sempre: due partecipanti adulti, presenti, categoria "Sposi".
+async function ensureSpouses(){
+  const legacy=[S.settings&&S.settings.a, S.settings&&S.settings.b];
+  for(let i=0;i<2;i++){
+    const id=SPOUSE_IDS[i]; const g=S.guests[id];
+    const fixed={role:'spouse',status:'presente',age:'adult',cat:'sposi',parent:null};
+    if(!g){
+      const first=(legacy[i]||'').trim();
+      const v={id,first,last:'',note:'',photo:null,created:i+1,updatedAt:first?2:1,...fixed};
+      S.guests[id]=v; if(S.deleted.guests) delete S.deleted.guests[id];
+      try{ await idbPut('guests',id,v); }catch(e){}
+    }else if(g.status!=='presente'||g.age!=='adult'||g.role!=='spouse'||g.cat!=='sposi'){
+      S.guests[id]={...g,...fixed}; try{ await idbPut('guests',id,S.guests[id]); }catch(e){}
+    }
+  }
+}
+function customCats(){ return Array.isArray(S.settings&&S.settings.cats)?S.settings.cats.filter(c=>c&&c.id&&c.name):[]; }
+function catName(id){ if(id==='sposi') return 'Sposi'; const c=customCats().find(c=>c.id===id); return c?c.name:''; }
+const RESERVED=/^\s*spos[io]\s*$/i;
+async function addCategory(name){
+  name=(name||'').trim();
+  if(!name) throw new Error('Scrivi il nome della categoria.');
+  if(RESERVED.test(name)) throw new Error('“Sposi” è riservata ai due sposi: scegli un altro nome.');
+  const ex=customCats().find(c=>c.name.toLowerCase()===name.toLowerCase()); if(ex) return ex.id;
+  const id='c'+uid();
+  await putSettings({...S.settings,cats:[...customCats(),{id,name}]});
+  return id;
+}
 async function remove(coll,id){
+  if(coll==='guests'&&SPOUSE_IDS.includes(id)) return;
   delete S[coll][id]; S.deleted[coll][id]=Date.now(); render();
   try{await idbDel(coll,id); await idbPut('meta','deleted',S.deleted);}catch(e){toast('Eliminazione non riuscita.'); throw e;}
   markDirty();
@@ -413,7 +497,7 @@ async function writeAllLocal(){
 
 async function boot(){
   render();
-  try{ idb=await openDB(); await loadAll(); mode='local'; }
+  try{ idb=await openDB(); await loadAll(); await ensureSpouses(); mode='local'; }
   catch(e){ idb=null; mode='memory'; toast('Archivio del browser non disponibile: i dati non verranno salvati.'); }
   try{ if(navigator.storage&&navigator.storage.persist) navigator.storage.persist(); }catch(e){}
   render();
@@ -538,6 +622,7 @@ function merge(a,b){
     const recs={};
     new Set([...Object.keys(ra),...Object.keys(rb)]).forEach(id=>{
       const x=ra[id], y=rb[id]; const w=!x?y:!y?x:((y.updatedAt||0)>(x.updatedAt||0)?y:x);
+      if(SPOUSE_IDS.includes(id)) delete del[id];
       if(del[id]&&del[id]>=(w.updatedAt||0)) return;
       if(del[id]) delete del[id];
       recs[id]={...w,id};
@@ -595,7 +680,7 @@ async function syncNow(quiet){
     }
     // riapplica sopra eventuali modifiche fatte durante la sincronizzazione
     const now=snapshot(); const finalState=merge(now,merged);
-    if(canon(finalState)!==canon(now)){ applyMerged(finalState); await writeAllLocal(); render(); }
+    if(canon(finalState)!==canon(now)){ applyMerged(finalState); await ensureSpouses(); await writeAllLocal(); render(); }
     for(const pid of used){
       if(!photoURLs[pid]&&merged.photos[pid]){
         try{ const b=await (await api(API+'/files/'+merged.photos[pid]+'?alt=media')).blob(); await idbPut('photos',pid,b); photoURLs[pid]=URL.createObjectURL(b); }catch(e){ if(e.code==='auth') throw e; }
@@ -644,20 +729,20 @@ async function importBackup(file){
       const now=Date.now();
       ['guests','todos','costs'].forEach(c=>{
         const incoming=data[c]||{};
-        Object.keys(S[c]).forEach(id=>{ if(!incoming[id]) S.deleted[c][id]=now; });
+        Object.keys(S[c]).forEach(id=>{ if(!incoming[id]&&!SPOUSE_IDS.includes(id)) S.deleted[c][id]=now; });
         S[c]={}; Object.entries(incoming).forEach(([k,v])=>{ S[c][k]={...v,id:k,updatedAt:now}; delete S.deleted[c][k]; });
       });
       S.settings={...(data.settings||{}),updatedAt:now};
       for(const [k,u] of Object.entries(data.photos||{})){ try{const b=await (await fetch(u)).blob(); await idbPut('photos',k,b); photoURLs[k]=URL.createObjectURL(b); delete S.drivePhotos[k];}catch(e){} }
-      await writeAllLocal(); render(); markDirty(); toast('Backup ripristinato');
+      await ensureSpouses(); await writeAllLocal(); render(); markDirty(); toast('Backup ripristinato');
     }catch(e){toast('Ripristino non riuscito.');}
   });
 }
 function exportCSV(){
   const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
-  const rows=[['Nome','Cognome','Categoria','Stato','Ruolo','Collegato a','Note']];
-  Object.values(S.guests).sort(byName).forEach(g=>{const p=g.parent&&S.guests[g.parent];
-    rows.push([g.first,g.last,g.age==='child'?'Bambino':'Adulto',STL[g.status]||g.status,g.role==='plus'?'+1':g.role==='child'?'Figlio/a':'Invitato',p?fullName(p):'',g.note]);});
+  const rows=[['Nome','Cognome','Età','Categoria','Stato','Ruolo','Collegato a','Note']];
+  [...spouses(),...Object.values(S.guests).filter(g=>!isSpouse(g)).sort(byName)].forEach(g=>{const p=g.parent&&S.guests[g.parent];
+    rows.push([g.first,g.last,g.age==='child'?'Bambino':'Adulto',catName(g.cat)||'Senza categoria',STL[g.status]||g.status,isSpouse(g)?'Sposo/a':g.role==='plus'?'+1':g.role==='child'?'Figlio/a':'Invitato',p?fullName(p):'',g.note]);});
   saveFile('invitati-'+stamp()+'.csv',new Blob(['﻿'+rows.map(r=>r.map(q).join(';')).join('\r\n')],{type:'text/csv'}));
 }
 
@@ -668,8 +753,8 @@ window.addEventListener('appinstalled',()=>{installEvt=null; const b=$('installB
 async function doInstall(){ if(!installEvt)return; installEvt.prompt(); try{await installEvt.userChoice;}catch(e){} installEvt=null; $('installBtn').hidden=true; }
 
 /* ---------- aggiornamenti dell'app ---------- */
-// Tieni questo numero uguale a quello in sw.js ('matrimonio-v3' -> '3').
-const APP_VERSION='3';
+// Tieni questo numero uguale a quello in sw.js ('matrimonio-v5' -> '5').
+const APP_VERSION='5';
 let swReg=null, updateRequested=false, pageHash='';
 async function hashText(t){ try{ const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)); return Array.from(new Uint8Array(b)).slice(0,8).map(x=>x.toString(16).padStart(2,'0')).join(''); }catch(e){ return t.length+':'+t.slice(-200); } }
 async function fetchPageHash(){ const r=await fetch('./index.html?check='+Date.now(),{cache:'no-store'}); if(!r.ok) throw 0; return hashText(await r.text()); }
@@ -787,15 +872,19 @@ function fullName(g){
   const p=g.parent&&S.guests[g.parent];
   if(g.role==='plus') return p?'+1 di '+(((p.first||'')+' '+(p.last||'')).trim()||'invitato'):'+1';
   if(g.role==='child') return p?'Figlio/a di '+(((p.first||'')+' '+(p.last||'')).trim()):'Figlio/a';
+  if(isSpouse(g)) return 'Sposo/a '+(SPOUSE_IDS.indexOf(g.id)+1)+' (da completare)';
   return 'Senza nome';
 }
 function statusSelect(g){
+  if(isSpouse(g)) return '<span class="st st-presente st-fixed" title="Gli sposi sono sempre presenti">Presente</span>';
   return '<select class="st st-'+esc(g.status)+'" data-act="status" data-id="'+esc(g.id)+'" aria-label="Stato di '+esc(fullName(g))+'">'+
     STATUSES.map(s=>'<option value="'+s.k+'"'+(s.k===g.status?' selected':'')+'>'+s.l+'</option>').join('')+'</select>';
 }
 function personHTML(g,isComp,dim){
   const hasName=((g.first||'')+(g.last||'')).trim();
   const tags=[];
+  if(isSpouse(g)) tags.push('<span class="tag spouse">Sposi</span>');
+  else if(catName(g.cat)) tags.push('<span class="tag cat">'+esc(catName(g.cat))+'</span>');
   tags.push('<span class="tag'+(g.age==='child'?' child':'')+'">'+(g.age==='child'?'Bambino':'Adulto')+'</span>');
   if(g.role==='plus') tags.push('<span>Accompagnatore</span>');
   if(g.role==='child') tags.push('<span>Figlio/a</span>');
@@ -811,33 +900,90 @@ function renderHeads(hc){
     HEADROWS.map(r=>{const o=hc[r.k];return '<tr><td><span class="nm">'+r.l+'</span><span class="def">'+r.def+'</span></td><td class="big">'+o.tot+'</td><td>'+o.ad+'</td><td>'+o.ch+'</td></tr>';}).join('')+
     '</tbody></table>';
 }
+const RESP=[{k:'presente',l:'Presenti'},{k:'invitato',l:'In attesa di risposta'},{k:'forse',l:'In forse'},{k:'assente',l:'Non presenti'}];
+function catKey(g){ return isSpouse(g)?'sposi':(g.cat&&catName(g.cat)&&g.cat!=='sposi'?g.cat:'_none'); }
+function catRows(){
+  const rows=[{id:'sposi',name:'Sposi'},...customCats().map(c=>({id:c.id,name:c.name})),{id:'',name:'Senza categoria'}];
+  const blank=()=>{const o={n:0,ad:0,ch:0}; STATUSES.forEach(s=>o[s.k]={n:0,ad:0,ch:0}); return o;};
+  const by={}; rows.forEach(r=>by[r.id]=blank()); const tot=blank();
+  Object.values(S.guests).forEach(g=>{
+    const k=isSpouse(g)?'sposi':(by[g.cat]&&g.cat!=='sposi'?g.cat:'');
+    [by[k],tot].forEach(o=>{ const b=o[g.status]||(o[g.status]={n:0,ad:0,ch:0}); b.n++; o.n++; if(g.age==='child'){b.ch++;o.ch++;}else{b.ad++;o.ad++;} });
+  });
+  return {rows:rows.map(r=>({...r,d:by[r.id]})).filter(r=>r.d.n>0||r.id!==''),tot};
+}
+function catRowHTML(name,d,id,total){
+  const inv=RESP.reduce((a,s)=>a+d[s.k].n,0);
+  const segs=RESP.filter(s=>d[s.k].n>0).map(s=>{
+    const b=d[s.k]; const pct=b.n/inv*100;
+    const tip=name+' · '+s.l+': '+b.n+(b.ch?' ('+b.ad+' adulti, '+b.ch+' bambini)':'')+' · '+Math.round(pct)+'%';
+    const on=ui.pop&&ui.pop.cat===id&&ui.pop.st===s.k;
+    return '<i class="sw-'+s.k+(on?' on':'')+'" style="flex:'+b.n+' 1 0" data-tip="'+esc(tip)+'" data-act="seg" data-cat="'+esc(id)+'" data-st="'+s.k+'" role="button" tabindex="0" aria-expanded="'+on+'" aria-label="'+esc(tip+'. Mostra i nomi')+'"></i>';
+  }).join('');
+  let pop='';
+  if(ui.pop&&ui.pop.cat===id&&d[ui.pop.st]&&d[ui.pop.st].n){
+    const st=ui.pop.st, lab=RESP.find(r=>r.k===st).l;
+    const before=RESP.slice(0,RESP.findIndex(r=>r.k===st)).reduce((a,r)=>a+d[r.k].n,0);
+    const x=((before+d[st].n/2)/inv*100).toFixed(1)+'%';
+    const people=Object.values(S.guests).filter(g=>g.status===st&&(id==='all'||catKey(g)===id))
+      .sort((a,b)=>(isSpouse(b)-isSpouse(a))||byName(a,b));
+    pop='<div class="segpop" style="--x:'+x+'" role="region" aria-label="'+esc(name+' · '+lab)+'">'+
+      '<div class="segpop-head"><span><i class="sw sw-'+st+'"></i> '+esc(name)+' · '+esc(lab)+' ('+people.length+')</span><button class="x" data-act="segclose" aria-label="Chiudi">×</button></div>'+
+      '<ul>'+people.map(g=>{
+        const p=g.parent&&S.guests[g.parent];
+        const meta=[g.age==='child'?'bambino':'', id==='all'&&catName(catKey(g))?catName(catKey(g)):'', p&&((g.first||g.last))?(g.role==='plus'?'+1 di ':'figlio/a di ')+((p.first||p.last)||''):''].filter(Boolean).join(' · ');
+        return '<li><button data-act="edit-guest" data-id="'+esc(g.id)+'">'+esc(fullName(g))+'</button>'+(meta?'<small>'+esc(meta)+'</small>':'')+'</li>';
+      }).join('')+'</ul></div>';
+  }
+  const conf=d.presente.n, pc=inv?Math.round(conf/inv*100):0;
+  const W={presente:['presente','presenti'],invitato:['in attesa','in attesa'],forse:['in forse','in forse'],assente:['non presente','non presenti']};
+  const nums=RESP.filter(s=>d[s.k].n).map(s=>'<span><i class="sw sw-'+s.k+'"></i><b>'+d[s.k].n+'</b> '+W[s.k][d[s.k].n===1?0:1]+'</span>').join('')+
+    (d.noninvitato.n?'<span>· '+d.noninvitato.n+' non invitat'+(d.noninvitato.n===1?'o':'i')+'</span>':'');
+  const sel=!total&&ui.gCat===id?' sel':'';
+  const nameEl=total?'<span class="cname2">'+esc(name)+'</span>':'<button class="cname2 link" data-act="catfilter" data-v="'+esc(id)+'" aria-pressed="'+(ui.gCat===id)+'" title="Mostra solo questa categoria nella lista">'+esc(name)+'</button>';
+  return '<div class="crow'+(total?' total':'')+sel+'">'+
+    '<div class="crow-top">'+nameEl+'<span class="cconf">'+(inv?'<b>'+conf+'</b> present'+(conf===1?'e':'i')+' su '+inv+' invitat'+(inv===1?'o':'i')+' · '+pc+'%':'nessun invitato')+'</span></div>'+
+    '<div class="sbar'+(inv?'':' empty')+'" role="group" aria-label="'+esc(name+': '+RESP.map(s=>d[s.k].n+' '+s.l.toLowerCase()).join(', '))+'">'+segs+'</div>'+
+    pop+'<div class="cnums">'+nums+'</div></div>';
+}
+function renderCatSummary(){
+  const {rows,tot}=catRows();
+  $('catsum').innerHTML='<div class="catsum-head"><h3>Risposte per categoria</h3><button class="btn small" data-act="cats">Gestisci categorie</button></div>'+
+    '<div class="legend">'+RESP.map(s=>'<span><i class="sw sw-'+s.k+'"></i>'+s.l+'</span>').join('')+'</div>'+
+    catRowHTML('Tutti',tot,'all',true)+rows.map(r=>catRowHTML(r.name,r.d,r.id||'_none',false)).join('')+
+    (customCats().length?'':'<p class="hint" style="margin:8px 0 0">Crea categorie come “Famiglia sposa”, “Amici”, “Colleghi” per vedere chi ha risposto in ogni gruppo.</p>');
+}
 function renderGuests(){
   const all=Object.values(S.guests);
   const counts={}; STATUSES.forEach(s=>counts[s.k]=0); all.forEach(g=>{counts[g.status]=(counts[g.status]||0)+1;});
   $('gChips').innerHTML='<button class="chip" data-act="gstatus" data-v="" aria-pressed="'+(ui.gStatus===''?'true':'false')+'">Tutti · '+all.length+'</button>'+
     STATUSES.map(s=>'<button class="chip" data-act="gstatus" data-v="'+s.k+'" aria-pressed="'+(ui.gStatus===s.k?'true':'false')+'">'+s.l+' · '+(counts[s.k]||0)+'</button>').join('');
 
-  const mains=all.filter(g=>!g.parent||!S.guests[g.parent]).sort(byName);
+  const cs=customCats();
+  const gc=$('gCat');
+  if(ui.gCat&&ui.gCat!=='sposi'&&ui.gCat!=='_none'&&!cs.find(c=>c.id===ui.gCat)) ui.gCat='';
+  gc.innerHTML='<option value="">Tutte le categorie</option><option value="sposi">Sposi</option>'+cs.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join('')+'<option value="_none">Senza categoria</option>';
+  gc.value=ui.gCat||'';
+  const mains=all.filter(g=>!g.parent||!S.guests[g.parent]).sort((a,b)=>(isSpouse(b)-isSpouse(a))||(isSpouse(a)?a.created-b.created:byName(a,b)));
   const kids={}; all.forEach(g=>{if(g.parent&&S.guests[g.parent]){(kids[g.parent]=kids[g.parent]||[]).push(g);}});
   const q=ui.gSearch.trim().toLowerCase();
-  const match=g=>(!q||fullName(g).toLowerCase().includes(q))&&(!ui.gStatus||g.status===ui.gStatus);
+  const catOf=g=>isSpouse(g)?'sposi':(g.cat&&catName(g.cat)?g.cat:'_none');
+  const match=g=>(!q||fullName(g).toLowerCase().includes(q))&&(!ui.gStatus||g.status===ui.gStatus)&&(!ui.gCat||catOf(g)===ui.gCat);
   const box=$('groups');
-  if(!all.length){
-    box.innerHTML='<div class="empty"><strong>Nessun invitato ancora</strong>Aggiungi il primo invitato: potrai poi associare un +1 o dei figli, e i conteggi si aggiornano da soli.<br><button class="btn primary" data-act="new-guest">+ Aggiungi invitato</button></div>';
-    return;
-  }
+  const noGuests=!all.some(g=>!isSpouse(g));
   const html=[];
   mains.forEach(m=>{
     const comps=(kids[m.id]||[]).sort((a,b)=>(a.role==='plus'?-1:0)-(b.role==='plus'?-1:0)||(a.created||0)-(b.created||0));
     const members=[m,...comps];
     if(!members.some(match)) return;
-    const filtering=!!(q||ui.gStatus);
+    const filtering=!!(q||ui.gStatus||ui.gCat);
     const hasPlus=comps.some(c=>c.role==='plus');
     html.push('<div class="group">'+personHTML(m,false,filtering&&!match(m))+
       comps.map(c=>personHTML(c,true,filtering&&!match(c))).join('')+
-      '<div class="gactions">'+(hasPlus?'':'<button class="btn small ghost" data-act="add-plus" data-id="'+esc(m.id)+'">+1</button>')+
+      '<div class="gactions">'+(hasPlus||isSpouse(m)?'':'<button class="btn small ghost" data-act="add-plus" data-id="'+esc(m.id)+'">+1</button>')+
       '<button class="btn small ghost" data-act="add-child" data-id="'+esc(m.id)+'">+ Figlio/a</button></div></div>');
   });
+  if(noGuests&&!q&&!ui.gStatus&&!ui.gCat) html.push('<div class="empty"><strong>Nessun invitato ancora</strong>Gli sposi sono già contati come presenti. Aggiungi il primo invitato: potrai poi associare un +1 o dei figli, e i conteggi si aggiornano da soli.<br><button class="btn primary" data-act="new-guest">+ Aggiungi invitato</button></div>');
   box.innerHTML=html.length?html.join(''):'<div class="empty"><strong>Nessun risultato</strong>Nessun invitato corrisponde ai filtri scelti.</div>';
 }
 
@@ -908,7 +1054,7 @@ function renderCosts(hc){
 
 function renderHeader(){
   const st=S.settings||{};
-  const names=[st.a,st.b].filter(x=>x&&x.trim()).join(' & ');
+  const sp=spouses(); const names=(sp.length?sp.map(g=>g.first):[st.a,st.b]).filter(x=>x&&x.trim()).join(' & ');
   $('coupleName').textContent=names||'Il nostro matrimonio';
   const bits=[];
   if(st.date){const n=dayDiff(st.date); bits.push('<span>'+esc(new Date(st.date+'T00:00:00').toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'}))+'</span>');
@@ -926,7 +1072,7 @@ function render(){
   $('n-invitati').textContent=hc.probabili.tot;
   $('n-cose').textContent=Object.values(S.todos).filter(t=>t.status!=='fatto').length;
   $('n-costi').textContent=Object.keys(S.costs).length;
-  renderHeads(hc); renderGuests(); renderTodos(); renderCosts(hc);
+  renderHeads(hc); renderCatSummary(); renderGuests(); renderTodos(); renderCosts(hc);
 }
 
 /* ---------- modali ---------- */
@@ -965,7 +1111,12 @@ function resizeImage(file,max){
 function guestForm(g,opts){
   opts=opts||{};
   const isNew=!g.id;
-  const title=isNew?(g.role==='plus'?'Aggiungi +1':g.role==='child'?'Aggiungi figlio/a':'Nuovo invitato'):'Modifica invitato';
+  const sp=isSpouse(g);
+  const title=sp?'Sposo/a':isNew?(g.role==='plus'?'Aggiungi +1':g.role==='child'?'Aggiungi figlio/a':'Nuovo invitato'):'Modifica invitato';
+  const cats=customCats();
+  const catField=sp?'<p class="hint" style="margin:0">Categoria <b>Sposi</b> · adulto · sempre presente</p>':
+    field('Categoria','<select id="gCatSel"><option value="">Senza categoria</option>'+cats.map(c=>'<option value="'+esc(c.id)+'"'+(c.id===g.cat?' selected':'')+'>'+esc(c.name)+'</option>').join('')+'<option value="__new">+ Nuova categoria…</option></select>')+
+    '<div id="gNewCatWrap" hidden>'+field('Nome della nuova categoria','<input id="gNewCat" autocomplete="off" placeholder="Es. Amici, Famiglia sposa, Colleghi">')+'</div>';
   const parent=g.parent&&S.guests[g.parent];
   const canPhoto=!!idb;
   modalState={kind:'guest',g:{...g},photo:{action:'keep'}};
@@ -976,11 +1127,13 @@ function guestForm(g,opts){
       '<input type="file" id="gPhoto" accept="image/*" hidden></div></div>':'')+
     '<div class="row2">'+field('Nome','<input id="gFirst" autocomplete="off" value="'+esc(g.first||'')+'" placeholder="'+(g.role==='plus'?'Anche da definire':'')+'">')+
     field('Cognome','<input id="gLast" autocomplete="off" value="'+esc(g.last||'')+'">')+'</div>'+
-    field('Categoria','<div class="seg"><label><input type="radio" name="gAge" value="adult"'+(g.age!=='child'?' checked':'')+'>Adulto</label><label><input type="radio" name="gAge" value="child"'+(g.age==='child'?' checked':'')+'>Bambino</label></div>')+
-    field('Stato','<select id="gStatus">'+STATUSES.map(s=>'<option value="'+s.k+'"'+(s.k===g.status?' selected':'')+'>'+s.l+'</option>').join('')+'</select>')+
+    catField+
+    (sp?'':field('Età','<div class="seg"><label><input type="radio" name="gAge" value="adult"'+(g.age!=='child'?' checked':'')+'>Adulto</label><label><input type="radio" name="gAge" value="child"'+(g.age==='child'?' checked':'')+'>Bambino</label></div>')+
+    field('Stato','<select id="gStatus">'+STATUSES.map(s=>'<option value="'+s.k+'"'+(s.k===g.status?' selected':'')+'>'+s.l+'</option>').join('')+'</select>'))+
     field('Note','<textarea id="gNote" placeholder="Tavolo, allergie al menù, contatti…">'+esc(g.note||'')+'</textarea>')+
-    '<div class="mfoot">'+(isNew?'':'<button type="button" class="btn danger" id="gDel">Elimina</button>')+
+    '<div class="mfoot">'+(isNew||sp?'':'<button type="button" class="btn danger" id="gDel">Elimina</button>')+
     '<div class="right"><button type="button" class="btn" data-act="close">Annulla</button><button type="submit" class="btn primary" id="gSave">Salva</button></div></div></form>');
+  if(!sp) $('gCatSel').onchange=e=>{ const n=e.target.value==='__new'; $('gNewCatWrap').hidden=!n; if(n) $('gNewCat').focus(); };
 
   if(canPhoto){
     $('gPhoto').onchange=async e=>{
@@ -994,19 +1147,24 @@ function guestForm(g,opts){
     };
     $('gPhotoRm').onclick=()=>{modalState.photo={action:'remove'}; $('gAv').innerHTML='<div class="avatar">'+esc(initials(modalState.g))+'</div>'; $('gPhotoRm').hidden=true;};
   }
-  if(!isNew) $('gDel').onclick=()=>deleteGuest(g.id);
+  if(!isNew&&!sp) $('gDel').onclick=()=>deleteGuest(g.id);
   $('gForm').onsubmit=async e=>{
     e.preventDefault();
     const btn=$('gSave'); btn.disabled=true; btn.textContent='Salvataggio…';
     const st=modalState; const cur=st.g;
     const data={
       first:$('gFirst').value.trim(), last:$('gLast').value.trim(),
-      age:(document.querySelector('input[name=gAge]:checked')||{}).value||'adult',
-      status:$('gStatus').value, note:$('gNote').value.trim(),
+      age:sp?'adult':((document.querySelector('input[name=gAge]:checked')||{}).value||'adult'),
+      status:sp?'presente':$('gStatus').value, note:$('gNote').value.trim(), cat:sp?'sposi':(cur.cat||''),
       role:cur.role||'main', parent:cur.parent||null,
       created:cur.created||Date.now(), photo:cur.photo||null
     };
-    if(!data.first&&!data.last&&data.role==='main'){toast('Inserisci almeno il nome o il cognome.'); btn.disabled=false; btn.textContent='Salva'; return;}
+    if(!data.first&&!data.last&&(data.role==='main'||sp)){toast('Inserisci almeno il nome o il cognome.'); btn.disabled=false; btn.textContent='Salva'; return;}
+    if(!sp){
+      const v=$('gCatSel').value;
+      if(v==='__new'){ try{ data.cat=await addCategory($('gNewCat').value); }catch(err){ toast(err.message); btn.disabled=false; btn.textContent='Salva'; return; } }
+      else data.cat=v;
+    }
     const oldPhoto=cur.photo;
     try{
       if(st.photo.action==='new'){
@@ -1094,13 +1252,81 @@ function costForm(c){
 }
 
 function settingsForm(){
-  const s=S.settings||{};
+  const s=S.settings||{}; const [a,b]=[S.guests[SPOUSE_IDS[0]]||{},S.guests[SPOUSE_IDS[1]]||{}];
   openModal('<h3>Il matrimonio</h3><form class="form" id="sForm" novalidate>'+
-    '<div class="row2">'+field('Sposo/a','<input id="sA" autocomplete="off" value="'+esc(s.a||'')+'">')+field('Sposo/a','<input id="sB" autocomplete="off" value="'+esc(s.b||'')+'">')+'</div>'+
+    '<div class="label">Sposo/a</div><div class="row2">'+field('Nome','<input id="sA1" autocomplete="off" value="'+esc(a.first||'')+'">')+field('Cognome','<input id="sA2" autocomplete="off" value="'+esc(a.last||'')+'">')+'</div>'+
+    '<div class="label">Sposo/a</div><div class="row2">'+field('Nome','<input id="sB1" autocomplete="off" value="'+esc(b.first||'')+'">')+field('Cognome','<input id="sB2" autocomplete="off" value="'+esc(b.last||'')+'">')+'</div>'+
+    '<p class="hint" style="margin:0">Gli sposi sono contati sempre come due partecipanti adulti presenti, anche nei costi.</p>'+
     '<div class="row2">'+field('Data','<input type="date" id="sDate" value="'+esc(s.date||'')+'">')+field('Luogo','<input id="sPlace" autocomplete="off" value="'+esc(s.place||'')+'">')+'</div>'+
     '<div class="mfoot"><div class="right"><button type="button" class="btn" data-act="close">Annulla</button><button type="submit" class="btn primary">Salva</button></div></div></form>');
-  $('sForm').onsubmit=async e=>{e.preventDefault(); await putSettings({a:$('sA').value.trim(),b:$('sB').value.trim(),date:$('sDate').value||'',place:$('sPlace').value.trim()}); closeModal(); toast('Salvato');};
+  $('sForm').onsubmit=async e=>{
+    e.preventDefault();
+    const pairs=[[SPOUSE_IDS[0],$('sA1').value.trim(),$('sA2').value.trim()],[SPOUSE_IDS[1],$('sB1').value.trim(),$('sB2').value.trim()]];
+    for(const [id,first,last] of pairs){ const g=S.guests[id]; if(g&&(g.first!==first||(g.last||'')!==last)) await put('guests',id,{...g,first,last}); }
+    const ns={...S.settings,date:$('sDate').value||'',place:$('sPlace').value.trim()}; delete ns.a; delete ns.b;
+    await putSettings(ns); closeModal(); toast('Salvato');
+  };
 }
+
+function catsForm(){
+  const counts={}; Object.values(S.guests).forEach(g=>{ if(!isSpouse(g)&&g.cat) counts[g.cat]=(counts[g.cat]||0)+1; });
+  const cats=customCats();
+  openModal('<h3>Categorie</h3><form class="form" id="kForm" novalidate>'+
+    '<p class="hint" style="margin:0">Raggruppa gli invitati (es. Famiglia sposa, Amici, Colleghi) per vedere quanti hanno risposto in ogni gruppo.</p>'+
+    '<div class="catlist"><div class="catline fixed"><span class="tag spouse">Sposi</span><span class="cnt">categoria fissa, solo per gli sposi</span></div>'+
+    cats.map(c=>'<div class="catline" data-id="'+esc(c.id)+'"><input value="'+esc(c.name)+'" aria-label="Nome categoria"><span class="cnt">'+(counts[c.id]||0)+' pers.</span><button type="button" class="btn small danger" data-del="'+esc(c.id)+'" aria-label="Elimina '+esc(c.name)+'">Elimina</button></div>').join('')+
+    '</div>'+
+    '<div class="catline"><input id="kNew" autocomplete="off" placeholder="Nuova categoria"><button type="button" class="btn small" id="kAdd">Aggiungi</button></div>'+
+    '<div class="mfoot"><div class="right"><button type="button" class="btn" data-act="close">Annulla</button><button type="submit" class="btn primary">Salva</button></div></div></form>');
+  const removed=new Set();
+  $('kForm').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.del, line=b.closest('.catline');
+    if(removed.has(id)){ removed.delete(id); line.style.opacity=''; b.textContent='Elimina'; }
+    else{ removed.add(id); line.style.opacity='.45'; b.textContent='Ripristina'; if(counts[id]) toast(counts[id]+' persone passeranno a “Senza categoria” quando salvi.'); }
+  });
+  const collect=()=>{
+    const out=[]; const seen=new Set();
+    for(const line of $('kForm').querySelectorAll('.catline[data-id]')){
+      const id=line.dataset.id; if(removed.has(id)) continue;
+      const name=line.querySelector('input').value.trim();
+      if(!name) throw new Error('Una categoria non ha nome.');
+      if(RESERVED.test(name)) throw new Error('“Sposi” è riservata ai due sposi.');
+      if(seen.has(name.toLowerCase())) throw new Error('Due categorie hanno lo stesso nome: '+name+'.');
+      seen.add(name.toLowerCase()); out.push({id,name});
+    }
+    return out;
+  };
+  $('kAdd').onclick=()=>{
+    const name=$('kNew').value.trim(); if(!name){ toast('Scrivi il nome della categoria.'); return; }
+    if(RESERVED.test(name)){ toast('“Sposi” è riservata ai due sposi: scegli un altro nome.'); return; }
+    if([...$('kForm').querySelectorAll('.catline[data-id] input')].some(i=>i.value.trim().toLowerCase()===name.toLowerCase())){ toast('Esiste già una categoria con questo nome.'); return; }
+    const d=document.createElement('div'); d.className='catline'; d.dataset.id='c'+uid();
+    d.innerHTML='<input aria-label="Nome categoria"><span class="cnt">nuova</span>'; d.querySelector('input').value=name;
+    $('kForm').querySelector('.catlist').appendChild(d); $('kNew').value=''; $('kNew').focus();
+  };
+  $('kNew').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); $('kAdd').click(); } });
+  $('kForm').onsubmit=async e=>{
+    e.preventDefault();
+    let cats2; try{ cats2=collect(); }catch(err){ toast(err.message); return; }
+    const pending=$('kNew').value.trim(); if(pending&&!RESERVED.test(pending)&&!cats2.some(c=>c.name.toLowerCase()===pending.toLowerCase())) cats2.push({id:'c'+uid(),name:pending});
+    await putSettings({...S.settings,cats:cats2});
+    for(const g of Object.values(S.guests)){ if(g.cat&&removed.has(g.cat)) await put('guests',g.id,{...g,cat:''}); }
+    closeModal(); toast('Categorie salvate');
+  };
+}
+
+/* tooltip dei grafici */
+let hideTip=()=>{};
+(function(){
+  let tip=null;
+  const show=(el,x,y)=>{ if(!tip){ tip=document.createElement('div'); tip.className='tip'; document.body.appendChild(tip); } tip.textContent=el.dataset.tip; tip.hidden=false;
+    const w=tip.offsetWidth, h=tip.offsetHeight; tip.style.left=Math.max(8,Math.min(window.innerWidth-w-8,x-w/2))+'px'; tip.style.top=Math.max(8,y-h-12)+'px'; };
+  const hide=()=>{ if(tip) tip.hidden=true; };
+  document.addEventListener('pointermove',e=>{ const el=e.target.closest&&e.target.closest('[data-tip]'); if(el&&e.pointerType==='mouse') show(el,e.clientX,e.clientY); else if(e.pointerType==='mouse') hide(); });
+  document.addEventListener('pointerdown',e=>{ if(e.pointerType!=='mouse') hide(); });
+  hideTip=hide;
+  window.addEventListener('scroll',hide,{passive:true});
+})();
 
 /* ---------- eventi ---------- */
 function setTab(t){ui.tab=t; try{localStorage.setItem('mx-tab',t);}catch(e){} render(); window.scrollTo({top:0});}
@@ -1116,10 +1342,16 @@ document.addEventListener('click',e=>{
     case 'data': dataMenu(); break;
     case 'sync': syncPillClick(); break;
     case 'new-guest': guestForm({status:'invitato',age:'adult',role:'main'}); break;
-    case 'add-plus':{const p=S.guests[id]; guestForm({status:p?p.status:'invitato',age:'adult',role:'plus',parent:id,last:''});break;}
-    case 'add-child':{const p=S.guests[id]; guestForm({status:p?p.status:'invitato',age:'child',role:'child',parent:id,last:p?p.last||'':''});break;}
+    case 'add-plus':{const p=S.guests[id]; guestForm({status:p?p.status:'invitato',age:'adult',role:'plus',parent:id,last:'',cat:p&&!isSpouse(p)?p.cat||'':''});break;}
+    case 'add-child':{const p=S.guests[id]; guestForm({status:p?(isSpouse(p)?'presente':p.status):'invitato',age:'child',role:'child',parent:id,last:p?p.last||'':'',cat:p&&!isSpouse(p)?p.cat||'':''});break;}
     case 'edit-guest': if(S.guests[id]) guestForm(S.guests[id]); break;
     case 'gstatus': ui.gStatus=el.dataset.v; renderGuests(); break;
+    case 'cats': catsForm(); break;
+    case 'seg':{ const c=el.dataset.cat, st=el.dataset.st; ui.pop=(ui.pop&&ui.pop.cat===c&&ui.pop.st===st)?null:{cat:c,st}; hideTip(); renderCatSummary();
+      if(ui.pop){ const p=$('catsum').querySelector('.segpop'); if(p){ const r=p.getBoundingClientRect(); if(r.bottom>window.innerHeight-20) window.scrollBy({top:r.bottom-window.innerHeight+40,behavior:'smooth'}); } }
+      break; }
+    case 'segclose': ui.pop=null; renderCatSummary(); break;
+    case 'catfilter':{ const v=el.dataset.v||'_none'; ui.gCat=ui.gCat===v?'':v; renderCatSummary(); renderGuests(); if(ui.gCat){ const t=$('gSearch'); window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'}); } break; }
     case 'new-todo': todoForm({status:'dafare'}); break;
     case 'edit-todo': if(S.todos[id]) todoForm(S.todos[id]); break;
     case 'toggle-todo':{const t=S.todos[id]; if(t) put('todos',id,{...t,status:t.status==='fatto'?'dafare':'fatto'}).catch(()=>{}); break;}
@@ -1139,10 +1371,14 @@ document.addEventListener('change',async e=>{
     try{await put('todos',t.id,{...t,status:el.value});}catch(err){el.value=t.status;}
   }else if(el.id==='tFilter'){ui.tFilter=el.value; renderTodos();}
   else if(el.id==='tOwner'){ui.tOwner=el.value; renderTodos();}
+  else if(el.id==='gCat'){ui.gCat=el.value; renderCatSummary(); renderGuests();}
 });
 $('installBtn').addEventListener('click',doInstall);
 $('gSearch').addEventListener('input',e=>{ui.gSearch=e.target.value; renderGuests();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('modalRoot').innerHTML) closeModal();});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){ if($('modalRoot').innerHTML) closeModal(); else if(ui.pop){ ui.pop=null; renderCatSummary(); } }
+  if((e.key==='Enter'||e.key===' ')&&e.target.dataset&&e.target.dataset.act==='seg'){ e.preventDefault(); const c=e.target.dataset.cat, st=e.target.dataset.st; e.target.click(); setTimeout(()=>{ const n=$('catsum').querySelector('[data-act=seg][data-cat="'+c+'"][data-st="'+st+'"]'); if(n) n.focus(); },0); }
+});
 
 boot();
 })();
