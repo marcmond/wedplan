@@ -1,0 +1,1097 @@
+<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2E5E55">
+<meta name="description" content="Invitati, cose da fare e costi del matrimonio">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>html{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<title>Regia del Matrimonio</title>
+<style>
+@font-face{font-family:'Figtree';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/figtree-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'Figtree';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/figtree-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:'Figtree';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/figtree-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'Figtree';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/figtree-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:'Italiana';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/italiana-latin-400-normal.woff2) format('woff2')}
+:root{
+  --bg:#F3F5F2; --surface:#FFFFFF; --surface-2:#F8FAF7; --ink:#1D2724; --muted:#5E6A65; --line:#DCE2DE;
+  --accent:#2E5E55; --accent-ink:#FFFFFF; --accent-soft:#E2ECE8;
+  --blush:#F3DEDA; --blush-ink:#8A4A44;
+  --st-presente:#2F7D4F; --st-presente-bg:#E1F1E6;
+  --st-invitato:#3460A6; --st-invitato-bg:#E3EAF6;
+  --st-forse:#9A6512; --st-forse-bg:#F7ECD6;
+  --st-assente:#A93E37; --st-assente-bg:#F6E1DF;
+  --st-noninvitato:#6C7470; --st-noninvitato-bg:#ECEFED;
+  --shadow:0 1px 2px rgba(20,40,35,.06),0 6px 20px rgba(20,40,35,.06);
+  --display:"Italiana",Georgia,"Times New Roman",serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#111614; --surface:#19201D; --surface-2:#1E2622; --ink:#E4EBE7; --muted:#9BA8A2; --line:#2D3833;
+    --accent:#86BFAF; --accent-ink:#0F1A17; --accent-soft:#1F2F2A;
+    --blush:#3A2826; --blush-ink:#E8B8B1;
+    --st-presente:#7FCF9C; --st-presente-bg:#1C3326;
+    --st-invitato:#94B4EC; --st-invitato-bg:#1D2940;
+    --st-forse:#E3B566; --st-forse-bg:#382C16;
+    --st-assente:#EE9C94; --st-assente-bg:#3B201E;
+    --st-noninvitato:#A7B0AC; --st-noninvitato-bg:#262D2A;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#111614; --surface:#19201D; --surface-2:#1E2622; --ink:#E4EBE7; --muted:#9BA8A2; --line:#2D3833;
+  --accent:#86BFAF; --accent-ink:#0F1A17; --accent-soft:#1F2F2A;
+  --blush:#3A2826; --blush-ink:#E8B8B1;
+  --st-presente:#7FCF9C; --st-presente-bg:#1C3326;
+  --st-invitato:#94B4EC; --st-invitato-bg:#1D2940;
+  --st-forse:#E3B566; --st-forse-bg:#382C16;
+  --st-assente:#EE9C94; --st-assente-bg:#3B201E;
+  --st-noninvitato:#A7B0AC; --st-noninvitato-bg:#262D2A;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:980px;margin:0 auto;padding-inline:16px;padding-block:0 96px}
+
+/* Header */
+.top{padding-block:28px 12px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.couple{background:none;border:0;padding:0;text-align:left}
+.couple h1{font-family:var(--display);font-weight:400;font-size:clamp(34px,7vw,52px);line-height:1;margin:0;letter-spacing:.01em;text-wrap:balance}
+.couple .sub{margin-top:8px;color:var(--muted);font-size:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.couple:hover h1{color:var(--accent)}
+.countdown{display:inline-flex;align-items:center;gap:6px;background:var(--blush);color:var(--blush-ink);border-radius:999px;padding:3px 10px;font-weight:600;font-size:13px;font-variant-numeric:tabular-nums}
+.mode{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 11px}
+.mode:hover{border-color:var(--accent);color:var(--ink)}
+.mode i{width:8px;height:8px;border-radius:50%;background:var(--st-noninvitato);display:inline-block}
+.mode.ok i{background:var(--st-presente)}
+.mode.busy i{background:var(--st-invitato)}
+.mode.wait i{background:var(--st-forse)}
+.mode.memory i{background:var(--st-assente)}
+.hactions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* Tabs */
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:2px;padding-block:10px;border-bottom:1px solid var(--line);margin-bottom:20px}
+.tab{flex:1 1 0;min-width:0;background:none;border:0;border-radius:10px;padding:10px 4px;font-weight:600;font-size:14px;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+.tab .n{font-size:12px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:0 7px;font-variant-numeric:tabular-nums;color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+.tab[aria-selected="true"] .n{background:transparent;border-color:color-mix(in srgb,var(--accent-ink) 40%,transparent);color:var(--accent-ink)}
+@media (min-width:640px){.tab{flex:0 0 auto;padding:10px 18px;font-size:15px}}
+
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:26px 0 12px}
+.section-head h2{font-family:var(--display);font-weight:400;font-size:28px;margin:0}
+.label{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:600}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 14px;font-weight:600;font-size:14px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.small{padding:5px 10px;font-size:13px;border-radius:8px}
+.btn.ghost{background:none;border-color:transparent;color:var(--muted)}
+.btn.ghost:hover{color:var(--ink);border-color:var(--line)}
+.btn.danger{color:var(--st-assente);border-color:color-mix(in srgb,var(--st-assente) 40%,transparent);background:none}
+.btn.danger.solid{background:var(--st-assente);color:#fff;border-color:var(--st-assente)}
+
+/* Headcount panel */
+.heads{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+.heads table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.heads th,.heads td{padding:12px 14px;text-align:right}
+.heads th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line)}
+.heads th:first-child,.heads td:first-child{text-align:left}
+.heads tr+tr td{border-top:1px solid var(--line)}
+.heads td.big{font-size:24px;font-weight:700}
+.heads td .def{display:block;font-size:12px;color:var(--muted);font-weight:400;margin-top:2px}
+.heads td .nm{font-weight:600}
+.heads td{font-size:17px}
+
+/* Toolbar */
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.search{flex:1 1 220px;min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 12px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* Guest groups */
+.groups{display:grid;gap:10px}
+.group{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px 6px 8px}
+.person{display:flex;align-items:center;gap:12px;padding:8px}
+.person.companion{margin-left:26px;padding-left:12px;border-left:2px solid var(--line);border-radius:0}
+.person.dim{opacity:.45}
+.avatar{flex:0 0 auto;width:44px;height:44px;border-radius:50%;border:0;padding:0;overflow:hidden;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:15px;display:grid;place-items:center}
+.companion .avatar{width:36px;height:36px;font-size:13px}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.avatar.child{background:var(--blush);color:var(--blush-ink)}
+.pinfo{flex:1;min-width:0}
+.pname{background:none;border:0;padding:0;font-weight:600;text-align:left;font-size:15px;overflow-wrap:anywhere}
+.pname:hover{color:var(--accent);text-decoration:underline}
+.pname .ph{color:var(--muted);font-weight:500;font-style:italic}
+.pmeta{display:flex;gap:6px;flex-wrap:wrap;margin-top:3px;font-size:12px;color:var(--muted)}
+.tag{border:1px solid var(--line);border-radius:6px;padding:0 6px;font-weight:500}
+.tag.child{background:var(--blush);color:var(--blush-ink);border-color:transparent}
+.st{appearance:none;-webkit-appearance:none;border:0;border-radius:999px;padding:6px 26px 6px 12px;font-size:13px;font-weight:600;cursor:pointer;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 13px) 55%,calc(100% - 9px) 55%;background-size:4px 4px;background-repeat:no-repeat;max-width:140px}
+.st-presente{color:var(--st-presente);background-color:var(--st-presente-bg)}
+.st-invitato{color:var(--st-invitato);background-color:var(--st-invitato-bg)}
+.st-forse{color:var(--st-forse);background-color:var(--st-forse-bg)}
+.st-assente{color:var(--st-assente);background-color:var(--st-assente-bg)}
+.st-noninvitato{color:var(--st-noninvitato);background-color:var(--st-noninvitato-bg)}
+.st option{background:var(--surface);color:var(--ink)}
+.gactions{display:flex;gap:6px;flex-wrap:wrap;padding:2px 8px 0 64px}
+@media (max-width:480px){.gactions{padding-left:8px}.person.companion{margin-left:14px}}
+
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:14px;padding:28px 20px;text-align:center;color:var(--muted)}
+.empty strong{display:block;color:var(--ink);font-size:16px;margin-bottom:4px}
+.empty .btn{margin-top:12px}
+
+/* Todos */
+.progress{display:flex;align-items:center;gap:12px;margin-bottom:14px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.bar{flex:1;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.todos{display:grid;gap:8px}
+.todo{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:start}
+.todo.overdue{border-color:color-mix(in srgb,var(--st-assente) 55%,var(--line))}
+.todo.done .ttitle{text-decoration:line-through;color:var(--muted)}
+.check{width:24px;height:24px;border-radius:7px;border:2px solid var(--line);background:var(--surface);display:grid;place-items:center;margin-top:1px;padding:0}
+.check.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.check.half{border-color:var(--st-forse)}
+.check.half::after{content:"";width:10px;height:10px;border-radius:3px;background:var(--st-forse)}
+.ttitle{background:none;border:0;padding:0;text-align:left;font-weight:600;font-size:15px;overflow-wrap:anywhere}
+.ttitle:hover{color:var(--accent)}
+.tmeta{grid-column:2/4;display:flex;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--muted);align-items:center}
+.who{background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:1px 9px;font-weight:600;font-size:12px}
+.due.late{color:var(--st-assente);font-weight:600}
+.due.soon{color:var(--st-forse);font-weight:600}
+.tnotes{grid-column:2/4;font-size:13px;color:var(--muted);white-space:pre-wrap;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tst{font-size:12px;border-radius:999px;padding:4px 22px 4px 10px}
+.ts-dafare{color:var(--st-noninvitato);background-color:var(--st-noninvitato-bg)}
+.ts-incorso{color:var(--st-forse);background-color:var(--st-forse-bg)}
+.ts-fatto{color:var(--st-presente);background-color:var(--st-presente-bg)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sel{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 10px;font-size:14px}
+
+/* Costs */
+.scen{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:620px){.scen{grid-template-columns:1fr}}
+.scard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
+.scard.mid{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow)}
+.scard .amt{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;margin:6px 0 4px;letter-spacing:-.01em}
+.scard .hc{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.scard .def{font-size:12px;color:var(--muted);margin-top:2px}
+.paidrow{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.paidrow b{color:var(--ink)}
+.costs{display:grid;gap:8px}
+.cost{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.chead{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.cname{background:none;border:0;padding:0;font-weight:600;font-size:15px;text-align:left;overflow-wrap:anywhere}
+.cname:hover{color:var(--accent)}
+.ctype{font-size:12px;color:var(--muted)}
+.ctype b{color:var(--ink);font-weight:600}
+.cvals{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;font-variant-numeric:tabular-nums}
+.cvals div{background:var(--surface-2);border-radius:10px;padding:7px 10px}
+.cvals .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+.cvals .v{font-weight:600;font-size:15px}
+.cvals.flat{grid-template-columns:1fr}
+.cfoot{margin-top:8px;font-size:13px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}
+.cfoot .ok{color:var(--st-presente);font-weight:600}
+
+/* Modal */
+.overlay{position:fixed;inset:0;background:rgba(10,20,16,.45);z-index:50;display:flex;align-items:flex-end;justify-content:center;padding:0}
+@media (min-width:640px){.overlay{align-items:center;padding:24px}}
+.modal{background:var(--surface);width:100%;max-width:520px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 10px 40px rgba(0,0,0,.25)}
+@media (min-width:640px){.modal{border-radius:18px}}
+.modal h3{font-family:var(--display);font-weight:400;font-size:26px;margin:0 0 14px}
+.form{display:grid;gap:12px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:420px){.row2{grid-template-columns:1fr}}
+.field{display:grid;gap:5px;min-width:0}
+.field>span{font-size:12px;font-weight:600;color:var(--muted)}
+.field input,.field select,.field textarea{border:1px solid var(--line);background:var(--surface-2);border-radius:10px;padding:10px 12px;width:100%;min-width:0}
+.field textarea{min-height:72px;resize:vertical}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg label{flex:1;text-align:center;padding:9px 6px;cursor:pointer;font-weight:600;font-size:14px;color:var(--muted)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){background:var(--accent);color:var(--accent-ink)}
+.seg label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:-2px}
+.photo{display:flex;align-items:center;gap:12px}
+.photo .avatar{width:64px;height:64px}
+.hint{font-size:12px;color:var(--muted)}
+.mfoot{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:18px;flex-wrap:wrap}
+.mfoot .right{display:flex;gap:8px;margin-left:auto}
+.form>.btn{justify-content:center}
+.calc{background:var(--accent-soft);color:var(--ink);border-radius:10px;padding:10px 12px;font-size:13px;font-variant-numeric:tabular-nums}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;z-index:80;max-width:calc(100% - 32px);box-shadow:var(--shadow)}
+.fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:10;border-radius:999px;padding:14px 20px;box-shadow:0 8px 24px rgba(20,40,35,.25)}
+@media (min-width:760px){.fab{display:none}}
+@media (prefers-reduced-motion:no-preference){.modal{animation:up .18s ease-out}@keyframes up{from{transform:translateY(12px);opacity:.6}to{transform:none;opacity:1}}}
+</style>
+
+</head><body>
+<div class="wrap">
+  <header class="top">
+    <button class="couple" id="coupleBtn" data-act="settings" aria-label="Modifica nomi e data">
+      <h1 id="coupleName">Il nostro matrimonio</h1>
+      <div class="sub" id="coupleSub"></div>
+    </button>
+    <div class="hactions"><button class="mode" id="mode" data-act="sync"><i></i><span>Caricamento…</span></button><button class="btn small" id="installBtn" hidden>Installa app</button><button class="btn small" data-act="data">Dati e backup</button></div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-invitati" data-tab="invitati">Invitati <span class="n" id="n-invitati">0</span></button>
+    <button class="tab" role="tab" id="tab-cose" data-tab="cose">Cose da fare <span class="n" id="n-cose">0</span></button>
+    <button class="tab" role="tab" id="tab-costi" data-tab="costi">Costi <span class="n" id="n-costi">0</span></button>
+  </nav>
+
+  <!-- INVITATI -->
+  <section id="panel-invitati" hidden>
+    <div class="heads" id="heads"></div>
+    <div class="section-head">
+      <h2>Lista invitati</h2>
+      <button class="btn primary" data-act="new-guest">+ Aggiungi invitato</button>
+    </div>
+    <div class="toolbar">
+      <input class="search" id="gSearch" type="search" placeholder="Cerca per nome o cognome" autocomplete="off">
+    </div>
+    <div class="chips" id="gChips" style="margin-bottom:14px"></div>
+    <div class="groups" id="groups"></div>
+  </section>
+
+  <!-- COSE DA FARE -->
+  <section id="panel-cose" hidden>
+    <div class="section-head" style="margin-top:4px">
+      <h2>Cose da fare</h2>
+      <button class="btn primary" data-act="new-todo">+ Aggiungi attività</button>
+    </div>
+    <div class="progress" id="tProgress"></div>
+    <div class="toolbar filters">
+      <select class="sel" id="tFilter" aria-label="Filtra per stato">
+        <option value="open">Da completare</option>
+        <option value="all">Tutte</option>
+        <option value="dafare">Da fare</option>
+        <option value="incorso">In corso</option>
+        <option value="fatto">Fatte</option>
+      </select>
+      <select class="sel" id="tOwner" aria-label="Filtra per responsabile"><option value="">Tutti i responsabili</option></select>
+    </div>
+    <div class="todos" id="todos"></div>
+  </section>
+
+  <!-- COSTI -->
+  <section id="panel-costi" hidden>
+    <div class="scen" id="scen"></div>
+    <div class="paidrow" id="paidrow"></div>
+    <div class="section-head">
+      <h2>Voci di spesa</h2>
+      <button class="btn primary" data-act="new-cost">+ Aggiungi costo</button>
+    </div>
+    <div class="costs" id="costs"></div>
+  </section>
+</div>
+
+<button class="btn primary fab" id="fab" data-act="fab">+ Aggiungi</button>
+<div id="modalRoot"></div>
+<div id="toastRoot"></div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- costanti ---------- */
+const STATUSES=[
+  {k:'presente',l:'Presente'},
+  {k:'invitato',l:'Invitato'},
+  {k:'forse',l:'In forse'},
+  {k:'assente',l:'Non presente'},
+  {k:'noninvitato',l:'Non invitato'}
+];
+const STL=Object.fromEntries(STATUSES.map(s=>[s.k,s.l]));
+const SCEN=[
+  {k:'sicuri',l:'Sicuri',set:['presente'],def:'Presenti'},
+  {k:'probabili',l:'Probabili',set:['presente','invitato'],def:'Presenti + invitati'},
+  {k:'possibili',l:'Possibili',set:['presente','invitato','forse'],def:'Presenti + invitati + in forse'}
+];
+const HEADROWS=[
+  {k:'sicuri',l:'Presenti',def:'Confermati'},
+  {k:'probabili',l:'Invitati',def:'Invitati + presenti'},
+  {k:'possibili',l:'Possibili',def:'Invitati + presenti + in forse'}
+];
+const TST=[{k:'dafare',l:'Da fare'},{k:'incorso',l:'In corso'},{k:'fatto',l:'Fatto'}];
+const TSTL=Object.fromEntries(TST.map(s=>[s.k,s.l]));
+const CTYPES=[
+  {k:'fixed',l:'Una tantum'},
+  {k:'guest',l:'Per invitato'},
+  {k:'adult',l:'Per adulto'},
+  {k:'child',l:'Per bambino'},
+  {k:'custom',l:'Personalizzato'}
+];
+const CTL=Object.fromEntries(CTYPES.map(s=>[s.k,s.l]));
+const EUR=new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR',maximumFractionDigits:2});
+const pl=(n,a,b)=>n+' '+(n===1?a:b);
+const eur=n=>EUR.format(Math.round((n||0)*100)/100);
+
+/* ---------- stato ---------- */
+const S={guests:{},todos:{},costs:{},settings:{}};
+let mode='loading';
+const ui={tab:'invitati',gSearch:'',gStatus:'',tFilter:'open',tOwner:''};
+try{const t=localStorage.getItem('mx-tab'); if(t) ui.tab=t;}catch(e){}
+const h0=(location.hash||'').slice(1); if(['invitati','cose','costi'].includes(h0)) ui.tab=h0;
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const num=v=>{if(v==null||v==='')return 0;const n=parseFloat(String(v).replace(/\s/g,'').replace(/\.(?=\d{3}(\D|$))/g,'').replace(',','.'));return isFinite(n)?n:0;};
+
+function toast(msg){
+  const r=$('toastRoot'); r.innerHTML='<div class="toast" role="status">'+esc(msg)+'</div>';
+  clearTimeout(toast.t); toast.t=setTimeout(()=>{r.innerHTML='';},2600);
+}
+
+/* ---------- archivio locale (IndexedDB) ---------- */
+const DBNAME='matrimonio-app', STORES=['guests','todos','costs','meta','photos'];
+let idb=null;
+const photoURLs={};
+S.deleted={guests:{},todos:{},costs:{}};   // "lapidi": cosa è stato eliminato e quando, per la sincronizzazione
+S.drivePhotos={};                           // id foto -> id file su Drive
+function openDB(){
+  return new Promise((res,rej)=>{
+    const r=indexedDB.open(DBNAME,1);
+    r.onupgradeneeded=()=>{const d=r.result; STORES.forEach(n=>{if(!d.objectStoreNames.contains(n))d.createObjectStore(n);});};
+    r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
+  });
+}
+function reqP(r){return new Promise((res,rej)=>{r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
+function txDone(t){return new Promise((res,rej)=>{t.oncomplete=()=>res();t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error);});}
+async function idbPut(store,key,val){ if(!idb)return; const t=idb.transaction(store,'readwrite'); t.objectStore(store).put(val,key); await txDone(t); }
+async function idbDel(store,key){ if(!idb)return; const t=idb.transaction(store,'readwrite'); t.objectStore(store).delete(key); await txDone(t); }
+async function idbGet(store,key){ if(!idb)return undefined; return reqP(idb.transaction(store,'readonly').objectStore(store).get(key)); }
+async function idbAll(store){
+  const out={}; if(!idb)return out;
+  const t=idb.transaction(store,'readonly'); const st=t.objectStore(store);
+  const [keys,vals]=await Promise.all([reqP(st.getAllKeys()),reqP(st.getAll())]);
+  keys.forEach((k,i)=>out[k]=vals[i]); return out;
+}
+function clean(data){const o={...data}; delete o.id; Object.keys(o).forEach(k=>{if(o[k]===undefined)delete o[k];}); return o;}
+const saveMeta=()=>Promise.all([idbPut('meta','settings',S.settings),idbPut('meta','deleted',S.deleted),idbPut('meta','drivePhotos',S.drivePhotos)]);
+async function put(coll,id,data){
+  const v={...clean(data),id,updatedAt:Date.now()}; S[coll][id]=v;
+  if(S.deleted[coll]) delete S.deleted[coll][id];
+  render();
+  try{await idbPut(coll,id,v);}catch(e){toast('Salvataggio non riuscito: spazio sul dispositivo insufficiente?'); throw e;}
+  markDirty();
+}
+async function remove(coll,id){
+  delete S[coll][id]; S.deleted[coll][id]=Date.now(); render();
+  try{await idbDel(coll,id); await idbPut('meta','deleted',S.deleted);}catch(e){toast('Eliminazione non riuscita.'); throw e;}
+  markDirty();
+}
+async function putSettings(data){ S.settings={...data,updatedAt:Date.now()}; render(); try{await idbPut('meta','settings',S.settings);}catch(e){toast('Salvataggio non riuscito.');} markDirty(); }
+async function savePhoto(blob){ const id='p'+uid(); await idbPut('photos',id,blob); photoURLs[id]=URL.createObjectURL(blob); return id; }
+async function deletePhoto(id){ if(!id)return; try{await idbDel('photos',id);}catch(e){} if(photoURLs[id]){URL.revokeObjectURL(photoURLs[id]); delete photoURLs[id];} }
+const photoSrc=id=>id&&photoURLs[id]||'';
+
+async function loadAll(){
+  const [g,t,c,m,ph]=await Promise.all(['guests','todos','costs','meta','photos'].map(idbAll));
+  S.guests=g; S.todos=t; S.costs=c; S.settings=m.settings||{};
+  S.deleted=Object.assign({guests:{},todos:{},costs:{}},m.deleted||{}); S.drivePhotos=m.drivePhotos||{};
+  Object.values(photoURLs).forEach(u=>URL.revokeObjectURL(u)); Object.keys(photoURLs).forEach(k=>delete photoURLs[k]);
+  Object.entries(ph).forEach(([k,b])=>{ if(b instanceof Blob) photoURLs[k]=URL.createObjectURL(b); });
+}
+async function writeAllLocal(){
+  const t=idb.transaction(['guests','todos','costs','meta'],'readwrite');
+  ['guests','todos','costs'].forEach(n=>{const st=t.objectStore(n); st.clear(); Object.values(S[n]).forEach(v=>st.put(v,v.id));});
+  const m=t.objectStore('meta'); m.put(S.settings,'settings'); m.put(S.deleted,'deleted'); m.put(S.drivePhotos,'drivePhotos');
+  await txDone(t);
+}
+
+async function boot(){
+  render();
+  try{ idb=await openDB(); await loadAll(); mode='local'; }
+  catch(e){ idb=null; mode='memory'; toast('Archivio del browser non disponibile: i dati non verranno salvati.'); }
+  try{ if(navigator.storage&&navigator.storage.persist) navigator.storage.persist(); }catch(e){}
+  render();
+  syncBoot();
+}
+
+/* ---------- sincronizzazione con Google Drive ---------- */
+// I dati stanno in "Regia del Matrimonio/dati.json" sul Drive dell'utente, le foto come file .jpg nella stessa cartella.
+// Permesso richiesto: drive.file = l'app vede SOLO i file che ha creato lei, nient'altro del Drive.
+// Facoltativo: incolla qui il tuo Client ID per non doverlo inserire su ogni dispositivo.
+const DEFAULT_CLIENT_ID='';
+const SCOPE='https://www.googleapis.com/auth/drive.file';
+const FOLDER_NAME='Regia del Matrimonio', DATA_NAME='dati.json';
+const API='https://www.googleapis.com/drive/v3', UP='https://www.googleapis.com/upload/drive/v3';
+const SY={clientId:'',enabled:false,token:'',exp:0,folderId:'',fileId:'',remoteMod:'',state:'off',last:0,dirty:false,gis:false};
+let tokenClient=null, tokenWaiter=null, syncing=false, syncAgain=false, syncTimer=null;
+const ls={get:k=>{try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e){return null;}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+function saveSync(){ ls.set('mx-sync',{clientId:SY.clientId,enabled:SY.enabled,folderId:SY.folderId,fileId:SY.fileId,remoteMod:SY.remoteMod,last:SY.last,dirty:SY.dirty}); ls.set('mx-token',{t:SY.token,exp:SY.exp}); }
+const tokenOk=()=>SY.token&&Date.now()<SY.exp;
+function setSync(st){ SY.state=st; renderSyncPill(); const b=$('mSyncState'); if(b) b.textContent=syncLabel(); }
+function syncLabel(){
+  if(!SY.enabled) return mode==='memory'?'Dati non salvati':'Solo su questo dispositivo';
+  if(!navigator.onLine) return 'Offline · sincronizzerà appena possibile';
+  switch(SY.state){
+    case 'syncing': return 'Sincronizzazione…';
+    case 'ok': return 'Sincronizzato alle '+new Date(SY.last).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+    case 'needauth': return (SY.dirty?'Modifiche da sincronizzare':'Da sincronizzare')+' · tocca qui';
+    case 'error': return 'Errore di sincronizzazione · riprova';
+    default: return 'Google Drive';
+  }
+}
+function renderSyncPill(){
+  const m=$('mode'); if(!m) return;
+  const cls=!SY.enabled?(mode==='memory'?'memory':'off'):!navigator.onLine?'wait':SY.state==='ok'?'ok':SY.state==='syncing'?'busy':SY.state==='error'?'memory':'wait';
+  m.className='mode '+cls; m.querySelector('span').textContent=syncLabel();
+}
+function loadGIS(){
+  return new Promise((res,rej)=>{
+    if(window.google&&google.accounts&&google.accounts.oauth2) return res();
+    const s=document.createElement('script'); s.src='https://accounts.google.com/gsi/client'; s.async=true;
+    s.onload=()=>res(); s.onerror=()=>rej(new Error('gis')); document.head.appendChild(s);
+  });
+}
+async function initGIS(){
+  if(!SY.clientId) return false;
+  try{ await loadGIS(); }catch(e){ return false; }
+  tokenClient=google.accounts.oauth2.initTokenClient({
+    client_id:SY.clientId, scope:SCOPE,
+    callback:r=>{ const w=tokenWaiter; tokenWaiter=null;
+      if(r&&r.access_token){ SY.token=r.access_token; SY.exp=Date.now()+((+r.expires_in||3600)-120)*1000; SY.enabled=true; saveSync(); w&&w.res(); syncNow(); }
+      else { w&&w.rej(r); setSync('needauth'); } },
+    error_callback:e=>{ const w=tokenWaiter; tokenWaiter=null; w&&w.rej(e); setSync('needauth'); if(e&&e.type==='popup_failed_to_open') toast('Il browser ha bloccato la finestra di accesso a Google: consenti i popup per questo sito.'); }
+  });
+  SY.gis=true; return true;
+}
+// Va chiamata direttamente dentro un clic (altrimenti il browser blocca la finestra di Google).
+function requestToken(first){
+  if(!tokenClient){ toast(navigator.onLine?'Accesso a Google non ancora pronto: riprova tra un attimo.':'Sei offline: collegati a internet per sincronizzare.'); initGIS(); return; }
+  tokenWaiter={res:()=>{},rej:()=>{}};
+  tokenClient.requestAccessToken({prompt:first?'consent':''});
+}
+function syncBoot(){
+  const s=ls.get('mx-sync')||{}; const t=ls.get('mx-token')||{};
+  Object.assign(SY,{clientId:s.clientId||DEFAULT_CLIENT_ID,enabled:!!s.enabled,folderId:s.folderId||'',fileId:s.fileId||'',remoteMod:s.remoteMod||'',last:s.last||0,dirty:!!s.dirty,token:t.t||'',exp:t.exp||0});
+  renderSyncPill();
+  if(SY.clientId) initGIS();
+  if(SY.enabled){ if(tokenOk()) syncNow(); else setSync('needauth'); }
+  document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&SY.enabled&&tokenOk()) syncNow(); });
+  window.addEventListener('online',()=>{ renderSyncPill(); if(SY.enabled&&tokenOk()) syncNow(); });
+  window.addEventListener('offline',renderSyncPill);
+  setInterval(()=>{ if(document.visibilityState==='visible'&&SY.enabled&&tokenOk()&&navigator.onLine) syncNow(true); },60000);
+}
+function markDirty(){
+  if(!SY.enabled) return;
+  SY.dirty=true; saveSync();
+  clearTimeout(syncTimer); syncTimer=setTimeout(()=>{ if(tokenOk()) syncNow(); else setSync('needauth'); },1500);
+}
+
+async function api(url,opts){
+  opts=opts||{}; opts.headers=Object.assign({},opts.headers,{Authorization:'Bearer '+SY.token});
+  const r=await fetch(url,opts);
+  if(r.status===401||r.status===403&&/insufficient|scope/i.test(await r.clone().text())){ SY.token=''; SY.exp=0; saveSync(); throw {code:'auth'}; }
+  if(!r.ok) throw {code:'http',status:r.status};
+  return r;
+}
+const q=s=>encodeURIComponent(s);
+async function ensureFolder(){
+  if(SY.folderId){
+    try{ const r=await (await api(API+'/files/'+SY.folderId+'?fields=id,trashed')).json(); if(!r.trashed) return SY.folderId; }catch(e){ if(e.code==='auth') throw e; }
+    SY.folderId=''; SY.fileId='';
+  }
+  const found=await (await api(API+'/files?spaces=drive&fields=files(id)&q='+q("name='"+FOLDER_NAME+"' and mimeType='application/vnd.google-apps.folder' and trashed=false"))).json();
+  if(found.files&&found.files.length){ SY.folderId=found.files[0].id; }
+  else{
+    const r=await (await api(API+'/files?fields=id',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:FOLDER_NAME,mimeType:'application/vnd.google-apps.folder'})})).json();
+    SY.folderId=r.id;
+  }
+  saveSync(); return SY.folderId;
+}
+async function findDataFile(folder){
+  const r=await (await api(API+'/files?spaces=drive&fields=files(id,modifiedTime)&orderBy=modifiedTime desc&q='+q("name='"+DATA_NAME+"' and '"+folder+"' in parents and trashed=false"))).json();
+  return r.files&&r.files[0]||null;
+}
+async function multipart(meta,blob,fileId){
+  const b='mx'+uid();
+  const body=new Blob(['--'+b+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify(meta)+'\r\n--'+b+'\r\nContent-Type: '+(blob.type||'application/octet-stream')+'\r\n\r\n',blob,'\r\n--'+b+'--']);
+  const url=UP+'/files'+(fileId?'/'+fileId:'')+'?uploadType=multipart&fields=id,modifiedTime';
+  return (await api(url,{method:fileId?'PATCH':'POST',headers:{'Content-Type':'multipart/related; boundary='+b},body})).json();
+}
+
+// Unione: per ogni voce vince la modifica più recente; le eliminazioni valgono se successive all'ultima modifica.
+function canon(v){ if(Array.isArray(v)) return '['+v.map(canon).join(',')+']'; if(v&&typeof v==='object') return '{'+Object.keys(v).sort().filter(k=>v[k]!==undefined).map(k=>JSON.stringify(k)+':'+canon(v[k])).join(',')+'}'; return JSON.stringify(v); }
+function snapshot(){ return {app:'matrimonio',format:2,settings:S.settings||{},guests:S.guests,todos:S.todos,costs:S.costs,deleted:S.deleted,photos:S.drivePhotos}; }
+function merge(a,b){
+  const out={app:'matrimonio',format:2,deleted:{},photos:Object.assign({},a.photos||{},b.photos||{})};
+  const sa=a.settings||{}, sb=b.settings||{};
+  out.settings=(sb.updatedAt||0)>(sa.updatedAt||0)?sb:sa;
+  const old=Date.now()-120*864e5;
+  ['guests','todos','costs'].forEach(c=>{
+    const ra=a[c]||{}, rb=b[c]||{}, da=(a.deleted||{})[c]||{}, db2=(b.deleted||{})[c]||{};
+    const del={}; new Set([...Object.keys(da),...Object.keys(db2)]).forEach(id=>{ const t=Math.max(da[id]||0,db2[id]||0); if(t>old) del[id]=t; });
+    const recs={};
+    new Set([...Object.keys(ra),...Object.keys(rb)]).forEach(id=>{
+      const x=ra[id], y=rb[id]; const w=!x?y:!y?x:((y.updatedAt||0)>(x.updatedAt||0)?y:x);
+      if(del[id]&&del[id]>=(w.updatedAt||0)) return;
+      if(del[id]) delete del[id];
+      recs[id]={...w,id};
+    });
+    out[c]=recs; out.deleted[c]=del;
+  });
+  return out;
+}
+function applyMerged(m){
+  S.settings=m.settings||{}; S.guests=m.guests; S.todos=m.todos; S.costs=m.costs;
+  S.deleted=Object.assign({guests:{},todos:{},costs:{}},m.deleted); S.drivePhotos=m.photos||{};
+}
+
+async function syncNow(quiet){
+  if(!SY.enabled||!idb) return;
+  if(!navigator.onLine){ renderSyncPill(); return; }
+  if(!tokenOk()){ setSync('needauth'); return; }
+  if(syncing){ syncAgain=true; return; }
+  syncing=true; if(!quiet) setSync('syncing');
+  try{
+    const folder=await ensureFolder();
+    let file=SY.fileId?{id:SY.fileId}:await findDataFile(folder);
+    let remote=null, remoteCanon='';
+    if(file){
+      let meta;
+      try{ meta=await (await api(API+'/files/'+file.id+'?fields=id,modifiedTime,trashed')).json(); }
+      catch(e){ if(e.code==='auth') throw e; meta=null; }
+      if(!meta||meta.trashed){ SY.fileId=''; file=await findDataFile(folder); if(file) meta=file; }
+      if(file){
+        SY.fileId=file.id;
+        if(quiet&&!SY.dirty&&meta.modifiedTime===SY.remoteMod){ syncing=false; return; }   // niente di nuovo
+        remote=await (await api(API+'/files/'+file.id+'?alt=media')).json();
+        remoteCanon=canon(remote); SY.remoteMod=meta.modifiedTime;
+      }
+    }
+    if(quiet) setSync('syncing');
+    let merged=remote?merge(snapshot(),remote):snapshot();
+
+    // foto: carica quelle nuove, scarica quelle mancanti, elimina da Drive quelle non più usate
+    const used=new Set(Object.values(merged.guests).map(g=>g.photo).filter(Boolean));
+    for(const pid of used){
+      if(!merged.photos[pid]){
+        const blob=await idbGet('photos',pid);
+        if(blob){ const r=await multipart({name:pid+'.jpg',parents:[folder]},blob); merged.photos[pid]=r.id; }
+      }
+    }
+    for(const [pid,fid] of Object.entries(merged.photos)){
+      if(!used.has(pid)){ try{ await api(API+'/files/'+fid,{method:'DELETE'}); }catch(e){ if(e.code==='auth') throw e; } delete merged.photos[pid]; }
+    }
+    const out=canon(merged);
+    if(out!==remoteCanon){
+      const blob=new Blob([JSON.stringify(merged)],{type:'application/json'});
+      const r=SY.fileId?await multipart({},blob,SY.fileId):await multipart({name:DATA_NAME,parents:[folder],mimeType:'application/json'},blob);
+      SY.fileId=r.id; SY.remoteMod=r.modifiedTime;
+    }
+    // riapplica sopra eventuali modifiche fatte durante la sincronizzazione
+    const now=snapshot(); const finalState=merge(now,merged);
+    if(canon(finalState)!==canon(now)){ applyMerged(finalState); await writeAllLocal(); render(); }
+    for(const pid of used){
+      if(!photoURLs[pid]&&merged.photos[pid]){
+        try{ const b=await (await api(API+'/files/'+merged.photos[pid]+'?alt=media')).blob(); await idbPut('photos',pid,b); photoURLs[pid]=URL.createObjectURL(b); }catch(e){ if(e.code==='auth') throw e; }
+      }
+    }
+    if(Object.values(S.guests).some(g=>g.photo&&photoURLs[g.photo])) render();
+    SY.dirty=syncAgain; SY.last=Date.now(); saveSync(); setSync('ok');
+  }catch(e){
+    if(e&&e.code==='auth') setSync('needauth');
+    else { setSync('error'); if(!quiet) toast('Sincronizzazione non riuscita. Controlla la connessione e riprova.'); }
+  }finally{
+    syncing=false;
+    if(syncAgain){ syncAgain=false; setTimeout(()=>syncNow(),400); }
+  }
+}
+function syncPillClick(){
+  if(!SY.enabled){ dataMenu(); return; }
+  if(!tokenOk()) requestToken(false); else syncNow();
+}
+function disconnect(){
+  try{ if(SY.token&&window.google) google.accounts.oauth2.revoke(SY.token,()=>{}); }catch(e){}
+  Object.assign(SY,{enabled:false,token:'',exp:0,state:'off'}); saveSync(); renderSyncPill();
+}
+
+/* ---------- backup ---------- */
+function blobToDataURL(b){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error);r.readAsDataURL(b);});}
+function saveFile(name,blob){
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name;
+  document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},1500);
+}
+const stamp=()=>new Date().toISOString().slice(0,10);
+async function exportBackup(){
+  const ph=await idbAll('photos'); const photos={};
+  const used=new Set(Object.values(S.guests).map(g=>g.photo).filter(Boolean));
+  for(const [k,b] of Object.entries(ph)){ if(b instanceof Blob&&used.has(k)) photos[k]=await blobToDataURL(b); }
+  const data={app:'matrimonio',version:1,exported:new Date().toISOString(),settings:S.settings,guests:S.guests,todos:S.todos,costs:S.costs,photos};
+  saveFile('matrimonio-backup-'+stamp()+'.json',new Blob([JSON.stringify(data)],{type:'application/json'}));
+  await putSettings({...S.settings,lastBackup:new Date().toISOString()});
+  toast('Backup esportato');
+}
+async function importBackup(file){
+  let data; try{data=JSON.parse(await file.text());}catch(e){toast('File non valido: scegli un backup .json esportato da questa app.');return;}
+  if(!data||data.app!=='matrimonio'){toast('Questo file non è un backup di questa app.');return;}
+  confirmBox('Ripristinare il backup?','Tutti i dati attuali verranno sostituiti con quelli del backup'+(data.exported?' del '+new Date(data.exported).toLocaleDateString('it-IT'):'')+(SY.enabled?', anche su Google Drive e sugli altri dispositivi.':'.'),'Ripristina',async()=>{
+    try{
+      const now=Date.now();
+      ['guests','todos','costs'].forEach(c=>{
+        const incoming=data[c]||{};
+        Object.keys(S[c]).forEach(id=>{ if(!incoming[id]) S.deleted[c][id]=now; });
+        S[c]={}; Object.entries(incoming).forEach(([k,v])=>{ S[c][k]={...v,id:k,updatedAt:now}; delete S.deleted[c][k]; });
+      });
+      S.settings={...(data.settings||{}),updatedAt:now};
+      for(const [k,u] of Object.entries(data.photos||{})){ try{const b=await (await fetch(u)).blob(); await idbPut('photos',k,b); photoURLs[k]=URL.createObjectURL(b); delete S.drivePhotos[k];}catch(e){} }
+      await writeAllLocal(); render(); markDirty(); toast('Backup ripristinato');
+    }catch(e){toast('Ripristino non riuscito.');}
+  });
+}
+function exportCSV(){
+  const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const rows=[['Nome','Cognome','Categoria','Stato','Ruolo','Collegato a','Note']];
+  Object.values(S.guests).sort(byName).forEach(g=>{const p=g.parent&&S.guests[g.parent];
+    rows.push([g.first,g.last,g.age==='child'?'Bambino':'Adulto',STL[g.status]||g.status,g.role==='plus'?'+1':g.role==='child'?'Figlio/a':'Invitato',p?fullName(p):'',g.note]);});
+  saveFile('invitati-'+stamp()+'.csv',new Blob(['﻿'+rows.map(r=>r.map(q).join(';')).join('\r\n')],{type:'text/csv'}));
+}
+
+/* ---------- installazione ---------- */
+let installEvt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault(); installEvt=e; const b=$('installBtn'); if(b) b.hidden=false;});
+window.addEventListener('appinstalled',()=>{installEvt=null; const b=$('installBtn'); if(b) b.hidden=true; toast('App installata');});
+async function doInstall(){ if(!installEvt)return; installEvt.prompt(); try{await installEvt.userChoice;}catch(e){} installEvt=null; $('installBtn').hidden=true; }
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
+
+function dataMenu(){
+  const lb=S.settings&&S.settings.lastBackup;
+  const origin=location.origin;
+  let sync;
+  if(!SY.clientId){
+    sync='<p class="hint" style="margin:0">Per avere gli stessi dati su PC e telefono serve un <b>Client ID Google</b> (gratuito, si crea una volta sola: vedi le istruzioni nel README). Origine da autorizzare: <code style="overflow-wrap:anywhere">'+esc(origin)+'</code></p>'+
+      field('Client ID Google','<input id="mCid" autocomplete="off" placeholder="1234…apps.googleusercontent.com">')+
+      '<button class="btn primary" id="mCidSave">Salva Client ID</button>';
+  }else if(!SY.enabled){
+    sync='<p class="hint" style="margin:0">Accedi con lo stesso account Google su tutti i dispositivi. L’app vedrà solo la cartella “'+FOLDER_NAME+'” che crea lei nel tuo Drive.</p>'+
+      '<button class="btn primary" id="mConnect">Collega Google Drive</button>'+
+      '<button class="btn ghost" id="mCidReset">Cambia Client ID</button>';
+  }else{
+    sync='<p class="hint" style="margin:0">Stato: <b id="mSyncState">'+esc(syncLabel())+'</b><br>File: Il mio Drive › '+FOLDER_NAME+' › '+DATA_NAME+'</p>'+
+      '<button class="btn primary" id="mSyncNow">Sincronizza ora</button>'+
+      '<button class="btn ghost" id="mDisc">Scollega Google Drive</button>';
+  }
+  openModal('<h3>Dati e backup</h3>'+
+    '<div class="form"><div class="label">Sincronizzazione Google Drive</div>'+sync+'</div>'+
+    '<div class="form" style="margin-top:22px"><div class="label">Backup ed esportazioni</div>'+
+    '<p class="hint" style="margin:0">'+(lb?'Ultimo backup esportato: '+esc(new Date(lb).toLocaleString('it-IT',{dateStyle:'medium',timeStyle:'short'})):'Nessun backup esportato finora.')+'</p>'+
+    '<button class="btn" id="mExp">Esporta backup (.json)</button>'+
+    '<label class="btn" for="mImpF" style="justify-content:center;cursor:pointer">Ripristina da backup…</label><input type="file" id="mImpF" accept=".json,application/json" hidden>'+
+    '<button class="btn" id="mCsv">Esporta invitati per Excel (.csv)</button>'+
+    (installEvt?'<button class="btn" id="mInst">Installa l’app su questo dispositivo</button>':'')+
+    '</div><div class="mfoot"><div class="right"><button class="btn" data-act="close">Chiudi</button></div></div>');
+  const on=(id,fn)=>{const el=$(id); if(el) el.onclick=fn;};
+  on('mCidSave',async()=>{ const v=$('mCid').value.trim(); if(!/\.apps\.googleusercontent\.com$/.test(v)){toast('Il Client ID deve finire con .apps.googleusercontent.com');return;} SY.clientId=v; saveSync(); const ok=await initGIS(); if(!ok) toast('Impossibile contattare Google: controlla la connessione.'); dataMenu(); });
+  on('mConnect',()=>{ closeModal(); requestToken(true); });
+  on('mCidReset',()=>{ SY.clientId=''; tokenClient=null; saveSync(); dataMenu(); });
+  on('mSyncNow',()=>{ if(tokenOk()) syncNow(); else requestToken(false); });
+  on('mDisc',()=>{ disconnect(); dataMenu(); toast('Google Drive scollegato. I dati restano su questo dispositivo e su Drive.'); });
+  on('mExp',()=>exportBackup().catch(()=>toast('Esportazione non riuscita.')));
+  on('mCsv',exportCSV);
+  on('mInst',()=>{closeModal(); doInstall();});
+  $('mImpF').onchange=e=>{const f=e.target.files&&e.target.files[0]; e.target.value=''; if(f) importBackup(f);};
+}
+
+/* ---------- calcoli ---------- */
+function headcounts(){
+  const out={}; SCEN.forEach(s=>out[s.k]={tot:0,ad:0,ch:0});
+  Object.values(S.guests).forEach(g=>{
+    SCEN.forEach(s=>{ if(s.set.includes(g.status)){ const o=out[s.k]; o.tot++; if(g.age==='child')o.ch++; else o.ad++; } });
+  });
+  return out;
+}
+function costFor(c,hc){
+  const a=num(c.amount);
+  switch(c.type){
+    case 'guest': return a*hc.tot;
+    case 'adult': return a*hc.ad;
+    case 'child': return a*hc.ch;
+    case 'custom': return a*(c.qty==null||c.qty===''?1:num(c.qty));
+    default: return a;
+  }
+}
+const perHead=t=>t==='guest'||t==='adult'||t==='child';
+
+/* ---------- rendering ---------- */
+function initials(g){const a=(g.first||'').trim()[0]||'', b=(g.last||'').trim()[0]||''; return (a+b).toUpperCase()||(g.role==='plus'?'+1':'?');}
+function avatarHTML(g,act){
+  const src=photoSrc(g.photo);
+  const inner=src?'<img src="'+esc(src)+'" alt="" loading="lazy">':esc(initials(g));
+  return '<button class="avatar'+(g.age==='child'?' child':'')+'" '+(act?'data-act="'+act+'" data-id="'+esc(g.id)+'"':'')+' aria-label="Modifica '+esc(fullName(g))+'">'+inner+'</button>';
+}
+function fullName(g){
+  const n=((g.first||'')+' '+(g.last||'')).trim();
+  if(n) return n;
+  const p=g.parent&&S.guests[g.parent];
+  if(g.role==='plus') return p?'+1 di '+(((p.first||'')+' '+(p.last||'')).trim()||'invitato'):'+1';
+  if(g.role==='child') return p?'Figlio/a di '+(((p.first||'')+' '+(p.last||'')).trim()):'Figlio/a';
+  return 'Senza nome';
+}
+function statusSelect(g){
+  return '<select class="st st-'+esc(g.status)+'" data-act="status" data-id="'+esc(g.id)+'" aria-label="Stato di '+esc(fullName(g))+'">'+
+    STATUSES.map(s=>'<option value="'+s.k+'"'+(s.k===g.status?' selected':'')+'>'+s.l+'</option>').join('')+'</select>';
+}
+function personHTML(g,isComp,dim){
+  const hasName=((g.first||'')+(g.last||'')).trim();
+  const tags=[];
+  tags.push('<span class="tag'+(g.age==='child'?' child':'')+'">'+(g.age==='child'?'Bambino':'Adulto')+'</span>');
+  if(g.role==='plus') tags.push('<span>Accompagnatore</span>');
+  if(g.role==='child') tags.push('<span>Figlio/a</span>');
+  if(g.note) tags.push('<span>'+esc(g.note.length>50?g.note.slice(0,50)+'…':g.note)+'</span>');
+  return '<div class="person'+(isComp?' companion':'')+(dim?' dim':'')+'">'+avatarHTML(g,'edit-guest')+
+    '<div class="pinfo"><button class="pname" data-act="edit-guest" data-id="'+esc(g.id)+'">'+(hasName?esc(fullName(g)):'<span class="ph">'+esc(fullName(g))+'</span>')+'</button>'+
+    '<div class="pmeta">'+tags.join('')+'</div></div>'+statusSelect(g)+'</div>';
+}
+const byName=(a,b)=>((a.last||'')+' '+(a.first||'')).localeCompare((b.last||'')+' '+(b.first||''),'it',{sensitivity:'base'})||(a.created||0)-(b.created||0);
+
+function renderHeads(hc){
+  $('heads').innerHTML='<table><thead><tr><th scope="col">Conteggio</th><th scope="col">Totale</th><th scope="col">Adulti</th><th scope="col">Bambini</th></tr></thead><tbody>'+
+    HEADROWS.map(r=>{const o=hc[r.k];return '<tr><td><span class="nm">'+r.l+'</span><span class="def">'+r.def+'</span></td><td class="big">'+o.tot+'</td><td>'+o.ad+'</td><td>'+o.ch+'</td></tr>';}).join('')+
+    '</tbody></table>';
+}
+function renderGuests(){
+  const all=Object.values(S.guests);
+  const counts={}; STATUSES.forEach(s=>counts[s.k]=0); all.forEach(g=>{counts[g.status]=(counts[g.status]||0)+1;});
+  $('gChips').innerHTML='<button class="chip" data-act="gstatus" data-v="" aria-pressed="'+(ui.gStatus===''?'true':'false')+'">Tutti · '+all.length+'</button>'+
+    STATUSES.map(s=>'<button class="chip" data-act="gstatus" data-v="'+s.k+'" aria-pressed="'+(ui.gStatus===s.k?'true':'false')+'">'+s.l+' · '+(counts[s.k]||0)+'</button>').join('');
+
+  const mains=all.filter(g=>!g.parent||!S.guests[g.parent]).sort(byName);
+  const kids={}; all.forEach(g=>{if(g.parent&&S.guests[g.parent]){(kids[g.parent]=kids[g.parent]||[]).push(g);}});
+  const q=ui.gSearch.trim().toLowerCase();
+  const match=g=>(!q||fullName(g).toLowerCase().includes(q))&&(!ui.gStatus||g.status===ui.gStatus);
+  const box=$('groups');
+  if(!all.length){
+    box.innerHTML='<div class="empty"><strong>Nessun invitato ancora</strong>Aggiungi il primo invitato: potrai poi associare un +1 o dei figli, e i conteggi si aggiornano da soli.<br><button class="btn primary" data-act="new-guest">+ Aggiungi invitato</button></div>';
+    return;
+  }
+  const html=[];
+  mains.forEach(m=>{
+    const comps=(kids[m.id]||[]).sort((a,b)=>(a.role==='plus'?-1:0)-(b.role==='plus'?-1:0)||(a.created||0)-(b.created||0));
+    const members=[m,...comps];
+    if(!members.some(match)) return;
+    const filtering=!!(q||ui.gStatus);
+    const hasPlus=comps.some(c=>c.role==='plus');
+    html.push('<div class="group">'+personHTML(m,false,filtering&&!match(m))+
+      comps.map(c=>personHTML(c,true,filtering&&!match(c))).join('')+
+      '<div class="gactions">'+(hasPlus?'':'<button class="btn small ghost" data-act="add-plus" data-id="'+esc(m.id)+'">+1</button>')+
+      '<button class="btn small ghost" data-act="add-child" data-id="'+esc(m.id)+'">+ Figlio/a</button></div></div>');
+  });
+  box.innerHTML=html.length?html.join(''):'<div class="empty"><strong>Nessun risultato</strong>Nessun invitato corrisponde ai filtri scelti.</div>';
+}
+
+function dayDiff(d){const t=new Date(d+'T00:00:00'); const n=new Date(); n.setHours(0,0,0,0); return Math.round((t-n)/864e5);}
+function relDay(n){ if(n===0)return 'oggi'; if(n===1)return 'domani'; if(n===-1)return 'ieri'; return n>0?'tra '+n+' giorni':'scaduta da '+(-n)+' giorni'; }
+function fmtDate(d){try{return new Date(d+'T00:00:00').toLocaleDateString('it-IT',{day:'numeric',month:'short',year:'numeric'});}catch(e){return d;}}
+
+function renderTodos(){
+  const all=Object.values(S.todos);
+  const done=all.filter(t=>t.status==='fatto').length;
+  $('tProgress').innerHTML=all.length?'<div class="bar"><i style="width:'+Math.round(done/all.length*100)+'%"></i></div><span>'+done+' di '+all.length+' completate</span>':'';
+  const owners=[...new Set(all.map(t=>(t.owner||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'it'));
+  const os=$('tOwner'); const cur=ui.tOwner;
+  os.innerHTML='<option value="">Tutti i responsabili</option>'+owners.map(o=>'<option'+(o===cur?' selected':'')+'>'+esc(o)+'</option>').join('');
+  $('tFilter').value=ui.tFilter;
+  let list=all.filter(t=>{
+    if(ui.tFilter==='open'&&t.status==='fatto')return false;
+    if(!['open','all'].includes(ui.tFilter)&&t.status!==ui.tFilter)return false;
+    if(ui.tOwner&&(t.owner||'').trim()!==ui.tOwner)return false;
+    return true;
+  });
+  list.sort((a,b)=>((a.status==='fatto')-(b.status==='fatto'))||((a.deadline||'9999')<(b.deadline||'9999')?-1:(a.deadline||'9999')>(b.deadline||'9999')?1:0)||(a.created||0)-(b.created||0));
+  const box=$('todos');
+  if(!all.length){box.innerHTML='<div class="empty"><strong>Nessuna attività</strong>Aggiungi le cose da fare: location, fiori, fotografo, partecipazioni… con responsabile e scadenza.<br><button class="btn primary" data-act="new-todo">+ Aggiungi attività</button></div>';return;}
+  if(!list.length){box.innerHTML='<div class="empty"><strong>Niente da mostrare</strong>'+(ui.tFilter==='open'?'Tutte le attività sono completate.':'Nessuna attività con questi filtri.')+'</div>';return;}
+  box.innerHTML=list.map(t=>{
+    const isDone=t.status==='fatto';
+    let due='';let late=false;
+    if(t.deadline){const n=dayDiff(t.deadline); late=!isDone&&n<0; const soon=!isDone&&n>=0&&n<=7;
+      due='<span class="due'+(late?' late':soon?' soon':'')+'">⏱ '+esc(fmtDate(t.deadline))+(isDone?'':' · '+relDay(n))+'</span>';}
+    const chk=t.status==='fatto'?'on':t.status==='incorso'?'half':'';
+    return '<div class="todo'+(isDone?' done':'')+(late?' overdue':'')+'">'+
+      '<button class="check '+chk+'" data-act="toggle-todo" data-id="'+esc(t.id)+'" aria-label="'+(isDone?'Segna come da fare':'Segna come fatto')+'">'+(isDone?'<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>':'')+'</button>'+
+      '<button class="ttitle" data-act="edit-todo" data-id="'+esc(t.id)+'">'+esc(t.title||'Senza titolo')+'</button>'+
+      '<select class="st tst ts-'+esc(t.status)+'" data-act="tstatus" data-id="'+esc(t.id)+'" aria-label="Stato">'+TST.map(s=>'<option value="'+s.k+'"'+(s.k===t.status?' selected':'')+'>'+s.l+'</option>').join('')+'</select>'+
+      '<div class="tmeta">'+(t.owner?'<span class="who">'+esc(t.owner)+'</span>':'<span>Nessun responsabile</span>')+due+'</div>'+
+      (t.notes?'<div class="tnotes">'+esc(t.notes)+'</div>':'')+
+    '</div>';
+  }).join('');
+}
+
+function renderCosts(hc){
+  const all=Object.values(S.costs).sort((a,b)=>(a.created||0)-(b.created||0));
+  const tot={}; SCEN.forEach(s=>tot[s.k]=all.reduce((acc,c)=>acc+costFor(c,hc[s.k]),0));
+  const paid=all.reduce((a,c)=>a+num(c.paid),0);
+  $('scen').innerHTML=SCEN.map((s,i)=>{const o=hc[s.k];
+    return '<div class="scard'+(i===1?' mid':'')+'"><div class="label">'+s.l+'</div><div class="amt">'+eur(tot[s.k])+'</div>'+
+      '<div class="hc">'+pl(o.tot,'persona','persone')+' · '+pl(o.ad,'adulto','adulti')+' · '+pl(o.ch,'bambino','bambini')+'</div><div class="def">'+s.def+'</div></div>';}).join('');
+  $('paidrow').innerHTML=all.length?'<span>Già versato <b>'+eur(paid)+'</b></span><span>Da versare (probabili) <b>'+eur(Math.max(0,tot.probabili-paid))+'</b></span>':'';
+  const box=$('costs');
+  if(!all.length){box.innerHTML='<div class="empty"><strong>Nessun costo inserito</strong>Aggiungi costi una tantum (es. location), per invitato (es. menù), per adulto, per bambino o personalizzati. Le proiezioni seguono la lista invitati.<br><button class="btn primary" data-act="new-cost">+ Aggiungi costo</button></div>';return;}
+  box.innerHTML=all.map(c=>{
+    const a=num(c.amount); let typeTxt='<b>'+CTL[c.type]+'</b> · ';
+    if(perHead(c.type)) typeTxt+=eur(a)+' a '+(c.type==='guest'?'persona':c.type==='adult'?'adulto':'bambino');
+    else if(c.type==='custom') typeTxt+=eur(a)+' × '+(c.qty==null||c.qty===''?1:num(c.qty))+(c.unit?' '+esc(c.unit):'');
+    else typeTxt+='importo fisso';
+    const vals=perHead(c.type)
+      ?'<div class="cvals">'+SCEN.map(s=>'<div><div class="k">'+s.l+'</div><div class="v">'+eur(costFor(c,hc[s.k]))+'</div></div>').join('')+'</div>'
+      :'<div class="cvals flat"><div><div class="k">Totale</div><div class="v">'+eur(costFor(c,hc.sicuri))+'</div></div></div>';
+    const p=num(c.paid);
+    const foot=[];
+    if(p>0) foot.push('<span class="ok">Versato '+eur(p)+'</span>');
+    if(c.notes) foot.push('<span>'+esc(c.notes)+'</span>');
+    return '<div class="cost"><div class="chead"><button class="cname" data-act="edit-cost" data-id="'+esc(c.id)+'">'+esc(c.name||'Senza nome')+'</button><span class="ctype">'+typeTxt+'</span></div>'+vals+
+      (foot.length?'<div class="cfoot">'+foot.join('')+'</div>':'')+'</div>';
+  }).join('');
+}
+
+function renderHeader(){
+  const st=S.settings||{};
+  const names=[st.a,st.b].filter(x=>x&&x.trim()).join(' & ');
+  $('coupleName').textContent=names||'Il nostro matrimonio';
+  const bits=[];
+  if(st.date){const n=dayDiff(st.date); bits.push('<span>'+esc(new Date(st.date+'T00:00:00').toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'}))+'</span>');
+    bits.push('<span class="countdown">'+(n>1?'mancano '+n+' giorni':n===1?'è domani':n===0?'è oggi!':'sposati da '+(-n)+' giorni')+'</span>');}
+  if(st.place) bits.push('<span>'+esc(st.place)+'</span>');
+  if(!bits.length) bits.push('<span>Tocca qui per inserire nomi, data e luogo</span>');
+  $('coupleSub').innerHTML=bits.join('');
+  renderSyncPill();
+}
+
+function render(){
+  const hc=headcounts();
+  renderHeader();
+  ['invitati','cose','costi'].forEach(t=>{ $('panel-'+t).hidden=ui.tab!==t; $('tab-'+t).setAttribute('aria-selected',ui.tab===t?'true':'false'); });
+  $('n-invitati').textContent=hc.probabili.tot;
+  $('n-cose').textContent=Object.values(S.todos).filter(t=>t.status!=='fatto').length;
+  $('n-costi').textContent=Object.keys(S.costs).length;
+  renderHeads(hc); renderGuests(); renderTodos(); renderCosts(hc);
+}
+
+/* ---------- modali ---------- */
+let modalState=null;
+function openModal(html,onMount){
+  $('modalRoot').innerHTML='<div class="overlay" data-act="overlay"><div class="modal" role="dialog" aria-modal="true">'+html+'</div></div>';
+  document.body.style.overflow='hidden';
+  const first=$('modalRoot').querySelector('input:not([type=radio]):not([type=file]),select,textarea');
+  if(onMount) onMount();
+  if(first) setTimeout(()=>first.focus(),30);
+}
+function closeModal(){ $('modalRoot').innerHTML=''; document.body.style.overflow=''; modalState=null; }
+function confirmBox(title,text,okLabel,onOk){
+  openModal('<h3>'+esc(title)+'</h3><p style="margin:0;color:var(--muted)">'+esc(text)+'</p><div class="mfoot"><div class="right"><button class="btn" data-act="close">Annulla</button><button class="btn danger solid" id="cfOk">'+esc(okLabel)+'</button></div></div>');
+  $('cfOk').onclick=async()=>{closeModal(); await onOk();};
+}
+const field=(label,inner,cls)=>'<label class="field'+(cls?' '+cls:'')+'"><span>'+label+'</span>'+inner+'</label>';
+
+/* immagini */
+function resizeImage(file,max){
+  return new Promise((res,rej)=>{
+    const url=URL.createObjectURL(file); const img=new Image();
+    img.onload=()=>{
+      const w=img.naturalWidth,h=img.naturalHeight; const s=Math.min(1,max/Math.max(w,h));
+      const cw=Math.max(1,Math.round(w*s)),ch=Math.max(1,Math.round(h*s));
+      const cv=document.createElement('canvas'); cv.width=cw; cv.height=ch;
+      const ctx=cv.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,cw,ch); ctx.drawImage(img,0,0,cw,ch);
+      URL.revokeObjectURL(url);
+      cv.toBlob(b=>b?res({blob:b,dataUrl:cv.toDataURL('image/jpeg',.82),w:cw,h:ch}):rej(new Error('conv')),'image/jpeg',.85);
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error('load'));};
+    img.src=url;
+  });
+}
+
+function guestForm(g,opts){
+  opts=opts||{};
+  const isNew=!g.id;
+  const title=isNew?(g.role==='plus'?'Aggiungi +1':g.role==='child'?'Aggiungi figlio/a':'Nuovo invitato'):'Modifica invitato';
+  const parent=g.parent&&S.guests[g.parent];
+  const canPhoto=!!idb;
+  modalState={kind:'guest',g:{...g},photo:{action:'keep'}};
+  openModal('<h3>'+title+'</h3>'+(parent?'<p class="hint" style="margin:-8px 0 12px">'+(g.role==='plus'?'Accompagnatore':'Figlio/a')+' di '+esc(fullName(parent))+'</p>':'')+
+    '<form class="form" id="gForm" novalidate>'+
+    (canPhoto?'<div class="photo"><div id="gAv">'+avatarHTML(g,'')+'</div><div style="display:grid;gap:6px"><div style="display:flex;gap:6px;flex-wrap:wrap"><label class="btn small" for="gPhoto" style="cursor:pointer">'+(g.photo?'Cambia foto':'Aggiungi foto')+'</label>'+
+      '<button type="button" class="btn small ghost" id="gPhotoRm"'+(g.photo?'':' hidden')+'>Rimuovi</button></div><span class="hint">Ridotta automaticamente a max 1024 px</span>'+
+      '<input type="file" id="gPhoto" accept="image/*" hidden></div></div>':'')+
+    '<div class="row2">'+field('Nome','<input id="gFirst" autocomplete="off" value="'+esc(g.first||'')+'" placeholder="'+(g.role==='plus'?'Anche da definire':'')+'">')+
+    field('Cognome','<input id="gLast" autocomplete="off" value="'+esc(g.last||'')+'">')+'</div>'+
+    field('Categoria','<div class="seg"><label><input type="radio" name="gAge" value="adult"'+(g.age!=='child'?' checked':'')+'>Adulto</label><label><input type="radio" name="gAge" value="child"'+(g.age==='child'?' checked':'')+'>Bambino</label></div>')+
+    field('Stato','<select id="gStatus">'+STATUSES.map(s=>'<option value="'+s.k+'"'+(s.k===g.status?' selected':'')+'>'+s.l+'</option>').join('')+'</select>')+
+    field('Note','<textarea id="gNote" placeholder="Tavolo, allergie al menù, contatti…">'+esc(g.note||'')+'</textarea>')+
+    '<div class="mfoot">'+(isNew?'':'<button type="button" class="btn danger" id="gDel">Elimina</button>')+
+    '<div class="right"><button type="button" class="btn" data-act="close">Annulla</button><button type="submit" class="btn primary" id="gSave">Salva</button></div></div></form>');
+
+  if(canPhoto){
+    $('gPhoto').onchange=async e=>{
+      const f=e.target.files&&e.target.files[0]; if(!f)return;
+      try{
+        const r=await resizeImage(f,1024);
+        modalState.photo={action:'new',blob:r.blob,dataUrl:r.dataUrl};
+        $('gAv').innerHTML='<div class="avatar"><img src="'+r.dataUrl+'" alt=""></div>';
+        $('gPhotoRm').hidden=false;
+      }catch(err){toast('Impossibile leggere questa immagine. Prova con un JPG o PNG.');}
+    };
+    $('gPhotoRm').onclick=()=>{modalState.photo={action:'remove'}; $('gAv').innerHTML='<div class="avatar">'+esc(initials(modalState.g))+'</div>'; $('gPhotoRm').hidden=true;};
+  }
+  if(!isNew) $('gDel').onclick=()=>deleteGuest(g.id);
+  $('gForm').onsubmit=async e=>{
+    e.preventDefault();
+    const btn=$('gSave'); btn.disabled=true; btn.textContent='Salvataggio…';
+    const st=modalState; const cur=st.g;
+    const data={
+      first:$('gFirst').value.trim(), last:$('gLast').value.trim(),
+      age:(document.querySelector('input[name=gAge]:checked')||{}).value||'adult',
+      status:$('gStatus').value, note:$('gNote').value.trim(),
+      role:cur.role||'main', parent:cur.parent||null,
+      created:cur.created||Date.now(), photo:cur.photo||null
+    };
+    if(!data.first&&!data.last&&data.role==='main'){toast('Inserisci almeno il nome o il cognome.'); btn.disabled=false; btn.textContent='Salva'; return;}
+    const oldPhoto=cur.photo;
+    try{
+      if(st.photo.action==='new'){
+        data.photo=await savePhoto(st.photo.blob);
+      }else if(st.photo.action==='remove'){ data.photo=null; }
+    }catch(err){ toast('Salvataggio della foto non riuscito: riprova.'); btn.disabled=false; btn.textContent='Salva'; return; }
+    const id=cur.id||uid();
+    const prevStatus=cur.id?S.guests[cur.id]&&S.guests[cur.id].status:null;
+    try{
+      await put('guests',id,data);
+      if(prevStatus&&prevStatus!==data.status&&data.role==='main') await propagateStatus(id,prevStatus,data.status);
+      if(oldPhoto&&oldPhoto!==data.photo) await deletePhoto(oldPhoto);
+      closeModal(); toast(cur.id?'Invitato aggiornato':'Invitato aggiunto');
+    }catch(err){ btn.disabled=false; btn.textContent='Salva'; }
+  };
+}
+async function propagateStatus(mainId,from,to){
+  const comps=Object.values(S.guests).filter(c=>c.parent===mainId&&c.status===from);
+  for(const c of comps){ await put('guests',c.id,{...c,status:to}); }
+}
+function deleteGuest(id){
+  const g=S.guests[id]; if(!g)return;
+  const comps=Object.values(S.guests).filter(c=>c.parent===id);
+  confirmBox('Eliminare '+fullName(g)+'?', comps.length?'Verranno eliminati anche '+comps.length+' accompagnatori/figli collegati.':'L’operazione non si può annullare.','Elimina',async()=>{
+    for(const x of [...comps,g]){
+      try{ await remove('guests',x.id); await deletePhoto(x.photo); }catch(e){return;}
+    }
+    toast('Eliminato');
+  });
+}
+
+function todoForm(t){
+  const isNew=!t.id;
+  const owners=[...new Set(Object.values(S.todos).map(x=>(x.owner||'').trim()).filter(Boolean))];
+  modalState={kind:'todo',t:{...t}};
+  openModal('<h3>'+(isNew?'Nuova attività':'Modifica attività')+'</h3><form class="form" id="tForm" novalidate>'+
+    field('Cosa c’è da fare','<input id="tTitle" autocomplete="off" value="'+esc(t.title||'')+'" placeholder="Es. Prenotare il fotografo">')+
+    '<div class="row2">'+field('Stato','<select id="tStatus">'+TST.map(s=>'<option value="'+s.k+'"'+(s.k===(t.status||'dafare')?' selected':'')+'>'+s.l+'</option>').join('')+'</select>')+
+    field('Scadenza','<input type="date" id="tDue" value="'+esc(t.deadline||'')+'">')+'</div>'+
+    field('Chi se ne occupa','<input id="tOwner2" list="ownerList" autocomplete="off" value="'+esc(t.owner||'')+'" placeholder="Es. Marco, Giulia, i testimoni"><datalist id="ownerList">'+owners.map(o=>'<option value="'+esc(o)+'">').join('')+'</datalist>')+
+    field('Note','<textarea id="tNotes">'+esc(t.notes||'')+'</textarea>')+
+    '<div class="mfoot">'+(isNew?'':'<button type="button" class="btn danger" id="tDel">Elimina</button>')+
+    '<div class="right"><button type="button" class="btn" data-act="close">Annulla</button><button type="submit" class="btn primary">Salva</button></div></div></form>');
+  if(!isNew) $('tDel').onclick=()=>confirmBox('Eliminare questa attività?',t.title||'','Elimina',async()=>{try{await remove('todos',t.id);toast('Attività eliminata');}catch(e){}});
+  $('tForm').onsubmit=async e=>{
+    e.preventDefault();
+    const title=$('tTitle').value.trim(); if(!title){toast('Scrivi cosa c’è da fare.');return;}
+    const data={title,status:$('tStatus').value,deadline:$('tDue').value||'',owner:$('tOwner2').value.trim(),notes:$('tNotes').value.trim(),created:t.created||Date.now()};
+    try{await put('todos',t.id||uid(),data); closeModal(); toast(isNew?'Attività aggiunta':'Attività aggiornata');}catch(err){}
+  };
+}
+
+function costForm(c){
+  const isNew=!c.id;
+  modalState={kind:'cost',c:{...c}};
+  const fmt=v=>v==null||v===''?'':String(v).replace('.',',');
+  openModal('<h3>'+(isNew?'Nuovo costo':'Modifica costo')+'</h3><form class="form" id="cForm" novalidate>'+
+    field('Voce','<input id="cName" autocomplete="off" value="'+esc(c.name||'')+'" placeholder="Es. Menù, Location, Bomboniere">')+
+    field('Tipo di costo','<select id="cType">'+CTYPES.map(s=>'<option value="'+s.k+'"'+(s.k===(c.type||'fixed')?' selected':'')+'>'+s.l+'</option>').join('')+'</select>')+
+    '<div class="row2">'+field('<span id="cAmtL">Importo (€)</span>','<input id="cAmt" inputmode="decimal" autocomplete="off" value="'+esc(fmt(c.amount))+'" placeholder="0,00">')+
+    '<div id="cQtyWrap" class="field-wrap">'+field('Quantità','<input id="cQty" inputmode="decimal" autocomplete="off" value="'+esc(fmt(c.qty==null?1:c.qty))+'">')+'</div></div>'+
+    '<div id="cUnitWrap">'+field('Unità (facoltativa)','<input id="cUnit" autocomplete="off" value="'+esc(c.unit||'')+'" placeholder="Es. ore, tavoli, centrotavola">')+'</div>'+
+    '<div class="calc" id="cCalc"></div>'+
+    field('Già versato (€)','<input id="cPaid" inputmode="decimal" autocomplete="off" value="'+esc(fmt(c.paid))+'" placeholder="0,00">')+
+    field('Note','<textarea id="cNotes">'+esc(c.notes||'')+'</textarea>')+
+    '<div class="mfoot">'+(isNew?'':'<button type="button" class="btn danger" id="cDel">Elimina</button>')+
+    '<div class="right"><button type="button" class="btn" data-act="close">Annulla</button><button type="submit" class="btn primary">Salva</button></div></div></form>');
+  const upd=()=>{
+    const type=$('cType').value; const hc=headcounts();
+    $('cQtyWrap').hidden=type!=='custom'; $('cUnitWrap').hidden=type!=='custom';
+    $('cAmtL').textContent=type==='fixed'?'Importo (€)':type==='custom'?'Prezzo unitario (€)':'Importo a '+(type==='guest'?'persona':type==='adult'?'adulto':'bambino')+' (€)';
+    const tmp={type,amount:num($('cAmt').value),qty:$('cQty').value===''?1:num($('cQty').value)};
+    $('cCalc').innerHTML=perHead(type)?SCEN.map(s=>s.l+': <b>'+eur(costFor(tmp,hc[s.k]))+'</b>').join(' · '):'Totale: <b>'+eur(costFor(tmp,hc.sicuri))+'</b>';
+  };
+  ['cType','cAmt','cQty'].forEach(i=>$(i).addEventListener('input',upd)); upd();
+  if(!isNew) $('cDel').onclick=()=>confirmBox('Eliminare questo costo?',c.name||'','Elimina',async()=>{try{await remove('costs',c.id);toast('Costo eliminato');}catch(e){}});
+  $('cForm').onsubmit=async e=>{
+    e.preventDefault();
+    const name=$('cName').value.trim(); if(!name){toast('Dai un nome alla voce di spesa.');return;}
+    const type=$('cType').value;
+    const data={name,type,amount:num($('cAmt').value),paid:num($('cPaid').value),notes:$('cNotes').value.trim(),created:c.created||Date.now()};
+    if(type==='custom'){data.qty=$('cQty').value===''?1:num($('cQty').value); data.unit=$('cUnit').value.trim();}
+    try{await put('costs',c.id||uid(),data); closeModal(); toast(isNew?'Costo aggiunto':'Costo aggiornato');}catch(err){}
+  };
+}
+
+function settingsForm(){
+  const s=S.settings||{};
+  openModal('<h3>Il matrimonio</h3><form class="form" id="sForm" novalidate>'+
+    '<div class="row2">'+field('Sposo/a','<input id="sA" autocomplete="off" value="'+esc(s.a||'')+'">')+field('Sposo/a','<input id="sB" autocomplete="off" value="'+esc(s.b||'')+'">')+'</div>'+
+    '<div class="row2">'+field('Data','<input type="date" id="sDate" value="'+esc(s.date||'')+'">')+field('Luogo','<input id="sPlace" autocomplete="off" value="'+esc(s.place||'')+'">')+'</div>'+
+    '<div class="mfoot"><div class="right"><button type="button" class="btn" data-act="close">Annulla</button><button type="submit" class="btn primary">Salva</button></div></div></form>');
+  $('sForm').onsubmit=async e=>{e.preventDefault(); await putSettings({a:$('sA').value.trim(),b:$('sB').value.trim(),date:$('sDate').value||'',place:$('sPlace').value.trim()}); closeModal(); toast('Salvato');};
+}
+
+/* ---------- eventi ---------- */
+function setTab(t){ui.tab=t; try{localStorage.setItem('mx-tab',t);}catch(e){} render(); window.scrollTo({top:0});}
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act],[data-tab]'); if(!el)return;
+  if(el.dataset.tab){setTab(el.dataset.tab);return;}
+  const a=el.dataset.act, id=el.dataset.id;
+  if(el.tagName==='SELECT')return;
+  switch(a){
+    case 'overlay': if(e.target===el) closeModal(); break;
+    case 'close': closeModal(); break;
+    case 'settings': settingsForm(); break;
+    case 'data': dataMenu(); break;
+    case 'sync': syncPillClick(); break;
+    case 'new-guest': guestForm({status:'invitato',age:'adult',role:'main'}); break;
+    case 'add-plus':{const p=S.guests[id]; guestForm({status:p?p.status:'invitato',age:'adult',role:'plus',parent:id,last:''});break;}
+    case 'add-child':{const p=S.guests[id]; guestForm({status:p?p.status:'invitato',age:'child',role:'child',parent:id,last:p?p.last||'':''});break;}
+    case 'edit-guest': if(S.guests[id]) guestForm(S.guests[id]); break;
+    case 'gstatus': ui.gStatus=el.dataset.v; renderGuests(); break;
+    case 'new-todo': todoForm({status:'dafare'}); break;
+    case 'edit-todo': if(S.todos[id]) todoForm(S.todos[id]); break;
+    case 'toggle-todo':{const t=S.todos[id]; if(t) put('todos',id,{...t,status:t.status==='fatto'?'dafare':'fatto'}).catch(()=>{}); break;}
+    case 'new-cost': costForm({type:'fixed'}); break;
+    case 'edit-cost': if(S.costs[id]) costForm(S.costs[id]); break;
+    case 'fab': ({invitati:()=>guestForm({status:'invitato',age:'adult',role:'main'}),cose:()=>todoForm({status:'dafare'}),costi:()=>costForm({type:'fixed'})})[ui.tab](); break;
+  }
+});
+document.addEventListener('change',async e=>{
+  const el=e.target;
+  if(el.dataset.act==='status'){
+    const g=S.guests[el.dataset.id]; if(!g)return; const prev=g.status; const to=el.value;
+    el.className='st st-'+to;
+    try{ await put('guests',g.id,{...g,status:to}); if(!g.parent) await propagateStatus(g.id,prev,to); }catch(err){ el.value=prev; el.className='st st-'+prev; }
+  }else if(el.dataset.act==='tstatus'){
+    const t=S.todos[el.dataset.id]; if(!t)return;
+    try{await put('todos',t.id,{...t,status:el.value});}catch(err){el.value=t.status;}
+  }else if(el.id==='tFilter'){ui.tFilter=el.value; renderTodos();}
+  else if(el.id==='tOwner'){ui.tOwner=el.value; renderTodos();}
+});
+$('installBtn').addEventListener('click',doInstall);
+$('gSearch').addEventListener('input',e=>{ui.gSearch=e.target.value; renderGuests();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('modalRoot').innerHTML) closeModal();});
+
+boot();
+})();
+</script>
+</body></html>
