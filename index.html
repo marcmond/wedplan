@@ -64,6 +64,12 @@ button{cursor:pointer}
 .couple h1{font-family:var(--display);font-weight:400;font-size:clamp(34px,7vw,52px);line-height:1;margin:0;letter-spacing:.01em;text-wrap:balance}
 .couple .sub{margin-top:8px;color:var(--muted);font-size:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .couple:hover h1{color:var(--accent)}
+.holdbtn{position:relative;overflow:hidden;justify-content:center;user-select:none;-webkit-user-select:none;touch-action:none;-webkit-touch-callout:none}
+.holdbtn .fill{position:absolute;inset:0;background:var(--blush);transform-origin:left;transform:scaleX(0);z-index:0}
+.holdbtn span{position:relative;z-index:1}
+.holdbtn.holding .fill{transform:scaleX(1);transition:transform 1.5s linear}
+.countdown-box{text-align:center;padding:14px;border-radius:12px;background:var(--blush);color:var(--blush-ink);font-weight:600}
+.countdown-box b{display:block;font-size:34px;font-variant-numeric:tabular-nums;line-height:1.1}
 .countdown{display:inline-flex;align-items:center;gap:6px;background:var(--blush);color:var(--blush-ink);border-radius:999px;padding:3px 10px;font-weight:600;font-size:13px;font-variant-numeric:tabular-nums}
 .mode{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 11px}
 .mode:hover{border-color:var(--accent);color:var(--ink)}
@@ -753,8 +759,8 @@ window.addEventListener('appinstalled',()=>{installEvt=null; const b=$('installB
 async function doInstall(){ if(!installEvt)return; installEvt.prompt(); try{await installEvt.userChoice;}catch(e){} installEvt=null; $('installBtn').hidden=true; }
 
 /* ---------- aggiornamenti dell'app ---------- */
-// Tieni questo numero uguale a quello in sw.js ('matrimonio-v5' -> '5').
-const APP_VERSION='5';
+// Tieni questo numero uguale a quello in sw.js ('matrimonio-v6' -> '6').
+const APP_VERSION='6';
 let swReg=null, updateRequested=false, pageHash='';
 async function hashText(t){ try{ const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)); return Array.from(new Uint8Array(b)).slice(0,8).map(x=>x.toString(16).padStart(2,'0')).join(''); }catch(e){ return t.length+':'+t.slice(-200); } }
 async function fetchPageHash(){ const r=await fetch('./index.html?check='+Date.now(),{cache:'no-store'}); if(!r.ok) throw 0; return hashText(await r.text()); }
@@ -800,6 +806,20 @@ if('serviceWorker' in navigator && location.protocol.startsWith('http')){
   });
 }
 
+// Il conto alla rovescia è nascosto: si vede solo tenendo premuto il pulsante per 1,5 secondi.
+function holdToReveal(btn,onDone){
+  let t=null;
+  const start=e=>{ if(e.type==='keydown'&&e.key!==' '&&e.key!=='Enter') return; if(e.type==='keydown'&&e.repeat) return; if(e.cancelable) e.preventDefault(); clearTimeout(t); btn.classList.add('holding'); t=setTimeout(()=>{ btn.classList.remove('holding'); onDone(); },1500); };
+  const stop=()=>{ clearTimeout(t); btn.classList.remove('holding'); };
+  btn.addEventListener('pointerdown',start); btn.addEventListener('keydown',start);
+  ['pointerup','pointerleave','pointercancel','keyup','blur'].forEach(ev=>btn.addEventListener(ev,stop));
+  btn.addEventListener('contextmenu',e=>e.preventDefault());
+}
+function showCountdown(){
+  const d=S.settings&&S.settings.date; if(!d||!$('cdWrap')) return;
+  const n=dayDiff(d);
+  $('cdWrap').innerHTML='<div class="countdown-box" role="status">'+(n>1?'Mancano<b>'+n+'</b>giorni':n===1?'<b>Domani</b>':n===0?'<b>È oggi!</b>':'Sposati da<b>'+(-n)+'</b>'+(n===-1?'giorno':'giorni'))+'</div>';
+}
 function dataMenu(){
   const lb=S.settings&&S.settings.lastBackup;
   const origin=location.origin;
@@ -825,8 +845,11 @@ function dataMenu(){
     '<label class="btn" for="mImpF" style="justify-content:center;cursor:pointer">Ripristina da backup…</label><input type="file" id="mImpF" accept=".json,application/json" hidden>'+
     '<button class="btn" id="mCsv">Esporta invitati per Excel (.csv)</button>'+
     (installEvt?'<button class="btn" id="mInst">Installa l’app su questo dispositivo</button>':'')+
-    '</div><div class="mfoot"><span class="hint">Versione '+APP_VERSION+'</span><div class="right"><button class="btn" id="mUpd">Cerca aggiornamenti</button><button class="btn" data-act="close">Chiudi</button></div></div>');
+    '</div>'+
+    ((S.settings&&S.settings.date)?'<div class="form" style="margin-top:22px"><div class="label">Conto alla rovescia</div><div id="cdWrap"><button type="button" class="btn holdbtn" id="cdHold"><i class="fill"></i><span>Tieni premuto per vedere i giorni mancanti</span></button></div></div>':'')+
+    '<div class="mfoot"><span class="hint">Versione '+APP_VERSION+'</span><div class="right"><button class="btn" id="mUpd">Cerca aggiornamenti</button><button class="btn" data-act="close">Chiudi</button></div></div>');
   const on=(id,fn)=>{const el=$(id); if(el) el.onclick=fn;};
+  if($('cdHold')) holdToReveal($('cdHold'),showCountdown);
   on('mCidSave',async()=>{ const v=$('mCid').value.trim(); if(!/\.apps\.googleusercontent\.com$/.test(v)){toast('Il Client ID deve finire con .apps.googleusercontent.com');return;} SY.clientId=v; saveSync(); const ok=await initGIS(); if(!ok) toast('Impossibile contattare Google: controlla la connessione.'); dataMenu(); });
   on('mConnect',()=>{ closeModal(); requestToken(true); });
   on('mCidReset',()=>{ SY.clientId=''; tokenClient=null; saveSync(); dataMenu(); });
@@ -1057,8 +1080,8 @@ function renderHeader(){
   const sp=spouses(); const names=(sp.length?sp.map(g=>g.first):[st.a,st.b]).filter(x=>x&&x.trim()).join(' & ');
   $('coupleName').textContent=names||'Il nostro matrimonio';
   const bits=[];
-  if(st.date){const n=dayDiff(st.date); bits.push('<span>'+esc(new Date(st.date+'T00:00:00').toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'}))+'</span>');
-    bits.push('<span class="countdown">'+(n>1?'mancano '+n+' giorni':n===1?'è domani':n===0?'è oggi!':'sposati da '+(-n)+' giorni')+'</span>');}
+  if(st.date){bits.push('<span>'+esc(new Date(st.date+'T00:00:00').toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'}))+'</span>');
+}
   if(st.place) bits.push('<span>'+esc(st.place)+'</span>');
   if(!bits.length) bits.push('<span>Tocca qui per inserire nomi, data e luogo</span>');
   $('coupleSub').innerHTML=bits.join('');

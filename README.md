@@ -45,6 +45,7 @@ Se non vuoi incollare il Client ID su ogni dispositivo, scrivilo in `index.html`
 
 ## Sposi e categorie
 
+- Il **conto alla rovescia** non compare da nessuna parte in automatico: si trova in **Dati e backup → Conto alla rovescia** e si vede solo tenendo premuto il pulsante per un secondo e mezzo.
 - Gli **sposi** sono sempre in lista: due partecipanti adulti, sempre presenti, contati anche nei costi. Nomi, data e luogo si modificano toccando il titolo in alto.
 - Ogni invitato può avere una **categoria** (es. Famiglia sposa, Amici, Colleghi). "Sposi" è fissa e riservata ai due sposi. Le altre si creano dalla scheda dell'invitato (**+ Nuova categoria…**) o da **Gestisci categorie**, dove puoi anche rinominarle o eliminarle.
 - Il +1 e i figli prendono in automatico la categoria dell'invitato a cui sono collegati.
@@ -68,8 +69,8 @@ C'è anche **Esporta invitati per Excel** (`.csv`).
 ## Aggiornare l'app
 
 1. Modifica i file e, **ogni volta**, aumenta il numero di versione in due punti:
-   - in `sw.js`: `const CACHE = 'matrimonio-v5';` → `matrimonio-v6`
-   - in `index.html`: `const APP_VERSION='5';` → `'6'`
+   - in `sw.js`: `const CACHE = 'matrimonio-v6';` → `matrimonio-v7`
+   - in `index.html`: `const APP_VERSION='6';` → `'7'`
 2. Carica i file modificati su GitHub.
 
 Le app installate e aperte controllano gli aggiornamenti ogni 5 minuti e ogni volta che torni sull'app.
