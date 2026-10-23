@@ -178,6 +178,16 @@ button{cursor:pointer}
 .person{display:flex;align-items:center;gap:12px;padding:8px}
 .group .person+.person{border-top:1px solid var(--line)}
 .linkchips{display:flex;flex-wrap:wrap;gap:6px}
+.picker{display:grid;gap:4px}
+.picker input{border:1px solid var(--line);background:var(--surface-2);border-radius:10px;padding:10px 12px;width:100%;min-width:0}
+.pick-res{display:grid;gap:2px;max-height:280px;overflow:auto}
+.pick-res:empty{display:none}
+.pick-it{display:flex;justify-content:space-between;align-items:baseline;gap:10px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:14px}
+.pick-it:hover,.pick-it:focus-visible{border-color:var(--accent);background:var(--accent-soft)}
+.pick-it small{color:var(--muted);font-size:12px;white-space:nowrap}
+.catsel{appearance:none;-webkit-appearance:none;font:inherit;font-size:12px;font-weight:500;border:1px solid transparent;border-radius:6px;padding:0 18px 0 6px;background-color:var(--accent-soft);color:var(--accent);cursor:pointer;max-width:170px;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 9px) 55%,calc(100% - 5px) 55%;background-size:4px 4px;background-repeat:no-repeat}
+.catsel.none{background-color:transparent;border:1px dashed var(--line);color:var(--muted)}
+.catsel option{background:var(--surface);color:var(--ink)}
 .linkchip{display:inline-flex;align-items:center;gap:4px;background:var(--accent-soft);color:var(--ink);border-radius:999px;padding:3px 4px 3px 10px;font-size:13px;font-weight:500}
 .linkchip button{background:none;border:0;color:var(--muted);font-size:16px;line-height:1;padding:1px 6px;border-radius:999px}
 .linkchip button:hover{color:var(--st-assente);background:var(--surface)}
@@ -807,8 +817,8 @@ window.addEventListener('appinstalled',()=>{installEvt=null; const b=$('installB
 async function doInstall(){ if(!installEvt)return; installEvt.prompt(); try{await installEvt.userChoice;}catch(e){} installEvt=null; $('installBtn').hidden=true; }
 
 /* ---------- aggiornamenti dell'app ---------- */
-// Tieni questo numero uguale a quello in sw.js ('matrimonio-v8' -> '8').
-const APP_VERSION='8';
+// Tieni questo numero uguale a quello in sw.js ('matrimonio-v9' -> '9').
+const APP_VERSION='9';
 let swReg=null, updateRequested=false, pageHash='';
 async function hashText(t){ try{ const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)); return Array.from(new Uint8Array(b)).slice(0,8).map(x=>x.toString(16).padStart(2,'0')).join(''); }catch(e){ return t.length+':'+t.slice(-200); } }
 async function fetchPageHash(){ const r=await fetch('./index.html?check='+Date.now(),{cache:'no-store'}); if(!r.ok) throw 0; return hashText(await r.text()); }
@@ -868,6 +878,45 @@ function showCountdown(){
   const n=dayDiff(d);
   $('cdWrap').innerHTML='<div class="countdown-box" role="status">'+(n>1?'Mancano<b>'+n+'</b>giorni':n===1?'<b>Domani</b>':n===0?'<b>È oggi!</b>':'Sposati da<b>'+(-n)+'</b>'+(n===-1?'giorno':'giorni'))+'</div>';
 }
+/* ---------- ricerca persone (per i collegamenti) ---------- */
+function personPicker(box,opts){
+  box.innerHTML='<div class="picker"><input type="search" autocomplete="off" placeholder="'+esc(opts.placeholder||'Scrivi nome o cognome…')+'" aria-label="Cerca una persona"><div class="pick-res" role="listbox"></div></div>';
+  const inp=box.querySelector('input'), res=box.querySelector('.pick-res');
+  const draw=()=>{
+    const q=normName(inp.value); if(!q){ res.innerHTML=''; return; }
+    const ex=opts.exclude();
+    const m=Object.values(S.guests).filter(o=>!ex.has(o.id)&&normName(fullName(o)+' '+(o.note||'')).includes(q)).sort((a,b)=>(isSpouse(b)-isSpouse(a))||byName(a,b));
+    res.innerHTML=m.length?m.slice(0,8).map(o=>'<button type="button" class="pick-it" data-id="'+esc(o.id)+'"><span>'+esc(fullName(o))+'</span><small>'+esc([isSpouse(o)?'Sposi':catName(o.cat),STL[o.status]].filter(Boolean).join(' · '))+'</small></button>').join('')+(m.length>8?'<span class="hint">… e altre '+(m.length-8)+': continua a scrivere</span>':''):'<span class="hint">Nessuna persona trovata</span>';
+  };
+  inp.addEventListener('input',draw);
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); const b=res.querySelector('.pick-it'); if(b) b.click(); } });
+  res.addEventListener('click',e=>{ const b=e.target.closest('.pick-it'); if(!b) return; opts.onPick(b.dataset.id); inp.value=''; draw(); inp.focus(); });
+  return {redraw:draw,focus:()=>inp.focus()};
+}
+function newCatFor(id){
+  const g=S.guests[id]; if(!g) return;
+  openModal('<h3>Nuova categoria</h3><form class="form" id="ncForm" novalidate>'+field('Nome della categoria','<input id="ncName" autocomplete="off" placeholder="Es. Amici, Famiglia sposa, Colleghi">')+
+    '<p class="hint" style="margin:0">Verrà assegnata a '+esc(fullName(g))+'.</p><div class="mfoot"><div class="right"><button type="button" class="btn" data-act="close">Annulla</button><button type="submit" class="btn primary">Crea e assegna</button></div></div></form>');
+  $('ncForm').onsubmit=async e=>{ e.preventDefault(); try{ const cid=await addCategory($('ncName').value); const cur=S.guests[id]; if(cur) await put('guests',id,{...cur,cat:cid}); closeModal(); toast('Categoria assegnata'); }catch(err){ toast(err.message||'Operazione non riuscita.'); } };
+}
+function linkToGroup(ids){
+  const members=ids.map(x=>S.guests[x]).filter(Boolean); if(!members.length) return;
+  const def=(members.find(x=>!isSpouse(x))||members[0]).id;
+  openModal('<h3>Collega una persona</h3><div class="form">'+
+    (members.length>1?field('Collegala a','<select id="lkTo">'+members.map(m=>'<option value="'+esc(m.id)+'"'+(m.id===def?' selected':'')+'>'+esc(fullName(m))+'</option>').join('')+'</select>'):'<p class="hint" style="margin:0">Collegala a <b>'+esc(fullName(members[0]))+'</b></p>')+
+    '<div class="field"><span>Cerca tra gli invitati</span><div id="lkPick"></div></div>'+
+    '<p class="hint" style="margin:0">Scrivi una parte del nome o del cognome e tocca la persona da collegare.</p>'+
+    '</div><div class="mfoot"><div class="right"><button class="btn" data-act="close">Chiudi</button></div></div>');
+  const groupIds=()=>{ const lm=linkMap(); const gr=groupsOf(lm).find(g=>g.some(x=>x.id===def))||members; return new Set(gr.map(x=>x.id)); };
+  const pk=personPicker($('lkPick'),{exclude:groupIds,placeholder:'Es. Rossi, Giulia…',onPick:async pid=>{
+    const to=($('lkTo')&&$('lkTo').value)||def; const a=S.guests[to], b=S.guests[pid]; if(!a||!b) return;
+    const add=(x,y)=>({...x,links:[...new Set([...(Array.isArray(x.links)?x.links:[]),y])]});
+    await putGuests([add(a,pid),add(b,to)]);
+    closeModal(); toast('Collegati: '+fullName(a)+' e '+fullName(b));
+  }});
+  setTimeout(()=>pk.focus(),40);
+}
+
 /* ---------- importazione invitati da CSV ---------- */
 function parseCSV(text){
   text=text.replace(/^﻿/,'');
@@ -1040,7 +1089,9 @@ function personHTML(g,dim){
   const hasName=((g.first||'')+(g.last||'')).trim();
   const tags=[];
   if(isSpouse(g)) tags.push('<span class="tag spouse">Sposi</span>');
-  else if(catName(g.cat)) tags.push('<span class="tag cat">'+esc(catName(g.cat))+'</span>');
+  else{ const cn=catName(g.cat);
+    tags.push('<select class="catsel'+(cn?'':' none')+'" data-act="catset" data-id="'+esc(g.id)+'" aria-label="Categoria di '+esc(fullName(g))+'"><option value="">'+(cn?'Senza categoria':'+ Categoria')+'</option>'+
+      customCats().map(c=>'<option value="'+esc(c.id)+'"'+(c.id===g.cat?' selected':'')+'>'+esc(c.name)+'</option>').join('')+'<option value="__new">+ Nuova categoria…</option></select>'); }
   tags.push('<span class="tag'+(g.age==='child'?' child':'')+'">'+(g.age==='child'?'Bambino':'Adulto')+'</span>');
   if(g.note) tags.push('<span>'+esc(g.note.length>50?g.note.slice(0,50)+'…':g.note)+'</span>');
   return '<div class="person'+(dim?' dim':'')+'">'+avatarHTML(g,'edit-guest')+
@@ -1284,7 +1335,7 @@ function guestForm(g,opts){
     (sp?'':field('Età','<div class="seg"><label><input type="radio" name="gAge" value="adult"'+(g.age!=='child'?' checked':'')+'>Adulto</label><label><input type="radio" name="gAge" value="child"'+(g.age==='child'?' checked':'')+'>Bambino</label></div>')+
     field('Stato','<select id="gStatus">'+STATUSES.map(s=>'<option value="'+s.k+'"'+(s.k===g.status?' selected':'')+'>'+s.l+'</option>').join('')+'</select>'))+
     '<div class="field"><span>Collegato a</span><div class="linkchips" id="gLinks"></div>'+
-      '<select id="gLinkAdd" class="sel" aria-label="Collega a un’altra persona"></select>'+
+      '<div id="gLinkAdd"></div>'+
       '<span class="hint">Persone che vengono insieme (partner, +1, figli, famiglia). Il collegamento vale in entrambe le direzioni.</span></div>'+
     field('Note','<textarea id="gNote" placeholder="Tavolo, allergie al menù, contatti…">'+esc(g.note||'')+'</textarea>')+
     '<div class="mfoot">'+(isNew||sp?'':'<button type="button" class="btn danger" id="gDel">Elimina</button>')+
@@ -1292,12 +1343,9 @@ function guestForm(g,opts){
   const drawLinks=()=>{
     const L=modalState.links;
     $('gLinks').innerHTML=L.size?[...L].map(o=>S.guests[o]).filter(Boolean).sort(byName).map(o=>'<span class="linkchip'+(modalState.orig.has(o.id)?'':' added')+'">'+esc(fullName(o))+(isSpouse(o)&&sp?'':'<button type="button" data-unlink="'+esc(o.id)+'" aria-label="Scollega '+esc(fullName(o))+'">×</button>')+'</span>').join(''):'<span class="hint">Nessun collegamento</span>';
-    const opts=Object.values(S.guests).filter(o=>o.id!==g.id&&!L.has(o.id)).sort((a,b)=>(isSpouse(b)-isSpouse(a))||byName(a,b));
-    $('gLinkAdd').innerHTML='<option value="">+ Collega a…</option>'+opts.map(o=>'<option value="'+esc(o.id)+'">'+esc(fullName(o))+'</option>').join('');
-    $('gLinkAdd').hidden=!opts.length;
     $('gLinks').querySelectorAll('[data-unlink]').forEach(b=>b.onclick=()=>{ L.delete(b.dataset.unlink); drawLinks(); });
   };
-  $('gLinkAdd').onchange=e=>{ if(e.target.value){ modalState.links.add(e.target.value); drawLinks(); } };
+  personPicker($('gLinkAdd'),{placeholder:'Collega a… (scrivi nome o cognome)',exclude:()=>new Set([g.id,...modalState.links].filter(Boolean)),onPick:pid=>{ modalState.links.add(pid); drawLinks(); }});
   drawLinks();
   if(!sp) $('gCatSel').onchange=e=>{ const n=e.target.value==='__new'; $('gNewCatWrap').hidden=!n; if(n) $('gNewCat').focus(); };
 
@@ -1316,6 +1364,7 @@ function guestForm(g,opts){
   if(!isNew&&!sp) $('gDel').onclick=()=>deleteGuest(g.id);
   $('gForm').onsubmit=async e=>{
     e.preventDefault();
+    if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('.picker')) return; // Invio nella ricerca: non salvare
     const btn=$('gSave'); btn.disabled=true; btn.textContent='Salvataggio…';
     const st=modalState; const cur=st.g;
     const data={
@@ -1539,8 +1588,7 @@ document.addEventListener('click',e=>{
     case 'data': dataMenu(); break;
     case 'sync': syncPillClick(); break;
     case 'new-guest': guestForm({status:'invitato',age:'adult'}); break;
-    case 'add-linked':{ const ids=(id||'').split(',').filter(x=>S.guests[x]); const base=ids.map(x=>S.guests[x]).find(x=>!isSpouse(x))||S.guests[ids[0]];
-      guestForm({status:base?(isSpouse(base)?'presente':base.status):'invitato',age:'adult',links:ids,cat:base&&!isSpouse(base)?base.cat||'':''}); break; }
+    case 'add-linked': linkToGroup((id||'').split(',').filter(x=>S.guests[x])); break;
     case 'edit-guest': if(S.guests[id]) guestForm(S.guests[id]); break;
     case 'gstatus': ui.gStatus=el.dataset.v; renderGuests(); break;
     case 'cats': catsForm(); break;
@@ -1569,6 +1617,11 @@ document.addEventListener('change',async e=>{
   }else if(el.id==='tFilter'){ui.tFilter=el.value; renderTodos();}
   else if(el.id==='tOwner'){ui.tOwner=el.value; renderTodos();}
   else if(el.id==='gCat'){ui.gCat=el.value; renderCatSummary(); renderGuests();}
+  else if(el.dataset.act==='catset'){
+    const g=S.guests[el.dataset.id]; if(!g) return;
+    if(el.value==='__new'){ el.value=g.cat||''; newCatFor(g.id); return; }
+    try{ await put('guests',g.id,{...g,cat:el.value}); toast(fullName(g)+': '+(catName(el.value)||'senza categoria')); }catch(err){ el.value=g.cat||''; }
+  }
 });
 $('installBtn').addEventListener('click',doInstall);
 $('gSearch').addEventListener('input',e=>{ui.gSearch=e.target.value; renderGuests();});
