@@ -807,8 +807,8 @@ window.addEventListener('appinstalled',()=>{installEvt=null; const b=$('installB
 async function doInstall(){ if(!installEvt)return; installEvt.prompt(); try{await installEvt.userChoice;}catch(e){} installEvt=null; $('installBtn').hidden=true; }
 
 /* ---------- aggiornamenti dell'app ---------- */
-// Tieni questo numero uguale a quello in sw.js ('matrimonio-v7' -> '7').
-const APP_VERSION='7';
+// Tieni questo numero uguale a quello in sw.js ('matrimonio-v8' -> '8').
+const APP_VERSION='8';
 let swReg=null, updateRequested=false, pageHash='';
 async function hashText(t){ try{ const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)); return Array.from(new Uint8Array(b)).slice(0,8).map(x=>x.toString(16).padStart(2,'0')).join(''); }catch(e){ return t.length+':'+t.slice(-200); } }
 async function fetchPageHash(){ const r=await fetch('./index.html?check='+Date.now(),{cache:'no-store'}); if(!r.ok) throw 0; return hashText(await r.text()); }
@@ -868,6 +868,89 @@ function showCountdown(){
   const n=dayDiff(d);
   $('cdWrap').innerHTML='<div class="countdown-box" role="status">'+(n>1?'Mancano<b>'+n+'</b>giorni':n===1?'<b>Domani</b>':n===0?'<b>È oggi!</b>':'Sposati da<b>'+(-n)+'</b>'+(n===-1?'giorno':'giorni'))+'</div>';
 }
+/* ---------- importazione invitati da CSV ---------- */
+function parseCSV(text){
+  text=text.replace(/^﻿/,'');
+  const first=text.split(/\r?\n/)[0]||'';
+  const d=[';','\t',','].sort((a,b)=>first.split(b).length-first.split(a).length)[0];
+  const rows=[]; let row=[], f='', q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){ f+='"'; i++; } else q=false; } else f+=c; }
+    else if(c==='"') q=true;
+    else if(c===d){ row.push(f); f=''; }
+    else if(c==='\n'||c==='\r'){ if(c==='\r'&&text[i+1]==='\n') i++; row.push(f); rows.push(row); row=[]; f=''; }
+    else f+=c;
+  }
+  if(f!==''||row.length){ row.push(f); rows.push(row); }
+  return rows.filter(r=>r.some(x=>x.trim()));
+}
+const normName=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
+function statusFromLabel(v){
+  const n=normName(v); if(!n) return 'invitato';
+  if(n==='presente'||n==='presenti') return 'presente';
+  if(n.includes('forse')) return 'forse';
+  if(n.startsWith('non presente')||n==='assente') return 'assente';
+  if(n.startsWith('non invitat')) return 'noninvitato';
+  return 'invitato';
+}
+async function importCSV(file){
+  let rows; try{ rows=parseCSV(await file.text()); }catch(e){ toast('Impossibile leggere il file.'); return; }
+  if(rows.length<2){ toast('Il file non contiene righe da importare.'); return; }
+  const H=rows[0].map(normName); const col=(...names)=>H.findIndex(h=>names.includes(h));
+  const ci={first:col('nome'),last:col('cognome'),age:col('eta','età'),cat:col('categoria'),st:col('stato'),sp:col('sposo/a','sposo','sposi'),ln:col('collegato a','collegati','collegamenti'),note:col('note')};
+  if(ci.first<0&&ci.last<0){ toast('Nel file serve almeno una colonna “Nome” o “Cognome”.'); return; }
+  const get=(r,i)=>i>=0?String(r[i]||'').trim():'';
+  const existing={}; Object.values(S.guests).forEach(g=>{ const k=normName((g.first||'')+' '+(g.last||'')); if(k) existing[k]=g.id; });
+  const plan=[], skipped=[], spouseFill=[], spouseSkip=[]; const seen=new Set();
+  // persone senza nome già presenti: riconosciute da nota + persona collegata
+  const lmI=linkMap();
+  Object.values(S.guests).forEach(g=>{ if(((g.first||'')+(g.last||'')).trim()) return;
+    linksOf(g.id,lmI).forEach(o=>{ const x=S.guests[o]; seen.add('?'+normName(g.note)+'|'+normName((x.first||'')+' '+(x.last||''))); }); });
+  const freeSpouses=SPOUSE_IDS.filter(id=>S.guests[id]&&!((S.guests[id].first||'')+(S.guests[id].last||'')).trim());
+  rows.slice(1).forEach(r=>{
+    const first=get(r,ci.first), last=get(r,ci.last), key=normName(first+' '+last);
+    const isSp=/^(si|sì|x|yes|1)$/i.test(get(r,ci.sp));
+    if(isSp){ if(existing[key]) return; const id=freeSpouses.shift(); if(id) spouseFill.push({id,first,last}); else spouseSkip.push(first+' '+last); return; }
+    const linksTxt=get(r,ci.ln), note=get(r,ci.note);
+    const dk=key||('?'+normName(note)+'|'+normName(linksTxt));
+    if(existing[key]||seen.has(dk)){ skipped.push((first+' '+last).trim()||note||'persona senza nome'); return; }
+    if(!key&&!linksTxt) return;
+    seen.add(dk);
+    plan.push({id:uid(),first,last,age:/bamb|child|bimb/i.test(get(r,ci.age))?'child':'adult',status:statusFromLabel(get(r,ci.st)),catName:get(r,ci.cat),note,linksTxt,created:Date.now()});
+  });
+  const ad=plan.filter(p=>p.age==='adult').length, ch=plan.length-ad;
+  const byS={}; plan.forEach(p=>byS[p.status]=(byS[p.status]||0)+1);
+  openModal('<h3>Importa invitati</h3><div class="form">'+
+    '<p style="margin:0">'+(plan.length?'<b>'+plan.length+'</b> nuov'+(plan.length===1?'a persona':'e persone')+' ('+ad+' adulti, '+ch+' bambini): '+STATUSES.filter(s=>byS[s.k]).map(s=>byS[s.k]+' '+s.l.toLowerCase()).join(', ')+'.':'Nessuna nuova persona da aggiungere.')+'</p>'+
+    (spouseFill.length?'<p class="hint" style="margin:0">Nomi degli sposi: '+esc(spouseFill.map(x=>(x.first+' '+x.last).trim()).join(' e '))+'.</p>':'')+
+    (skipped.length?'<p class="hint" style="margin:0">Già in lista, quindi saltat'+(skipped.length===1?'o':'i')+': '+esc(skipped.join(', '))+'.</p>':'')+
+    '<p class="hint" style="margin:0">Le persone già presenti non vengono modificate. Puoi annullare eliminando le persone dalla lista.</p>'+
+    '</div><div class="mfoot"><div class="right"><button class="btn" data-act="close">Annulla</button><button class="btn primary" id="impGo"'+(plan.length||spouseFill.length?'':' disabled')+'>Importa</button></div></div>');
+  $('impGo').onclick=async()=>{
+    $('impGo').disabled=true; $('impGo').textContent='Importazione…';
+    try{
+      // categorie mancanti
+      const cats=[...customCats()];
+      plan.forEach(p=>{ const n=p.catName.trim(); if(!n||RESERVED.test(n)) { p.cat=''; return; }
+        let c=cats.find(c=>c.name.toLowerCase()===n.toLowerCase()); if(!c){ c={id:'c'+uid(),name:n}; cats.push(c); } p.cat=c.id; });
+      if(cats.length!==customCats().length) await putSettings({...S.settings,cats});
+      // collegamenti per nome
+      const nameMap={}; Object.values(S.guests).forEach(g=>{ const k=normName((g.first||'')+' '+(g.last||'')); if(k) (nameMap[k]=nameMap[k]||[]).push(g.id); });
+      plan.forEach(p=>{ const k=normName(p.first+' '+p.last); if(k) (nameMap[k]=nameMap[k]||[]).push(p.id); });
+      const L={}; plan.forEach(p=>L[p.id]=new Set());
+      const extra={};
+      plan.forEach(p=>p.linksTxt.split(/[,;]/).map(normName).filter(Boolean).forEach(n=>{ const ids=nameMap[n]; if(!ids||ids.length!==1||ids[0]===p.id) return; const o=ids[0];
+        L[p.id].add(o); if(L[o]) L[o].add(p.id); else (extra[o]=extra[o]||new Set()).add(p.id); }));
+      const list=plan.map(p=>({id:p.id,first:p.first,last:p.last,age:p.age,status:p.status,cat:p.cat,note:p.note,photo:null,links:[...L[p.id]],created:p.created}));
+      Object.entries(extra).forEach(([o,set])=>{ const g=S.guests[o]; if(g) list.push({...g,links:[...new Set([...(g.links||[]),...set])]}); });
+      spouseFill.forEach(x=>{ const g=S.guests[x.id]; if(g) list.push({...g,first:x.first,last:x.last}); });
+      await putGuests(list);
+      closeModal(); toast('Importat'+(plan.length===1?'a 1 persona':'e '+plan.length+' persone'));
+    }catch(e){ toast('Importazione non riuscita.'); }
+  };
+}
+
 function dataMenu(){
   const lb=S.settings&&S.settings.lastBackup;
   const origin=location.origin;
@@ -892,6 +975,7 @@ function dataMenu(){
     '<button class="btn" id="mExp">Esporta backup (.json)</button>'+
     '<label class="btn" for="mImpF" style="justify-content:center;cursor:pointer">Ripristina da backup…</label><input type="file" id="mImpF" accept=".json,application/json" hidden>'+
     '<button class="btn" id="mCsv">Esporta invitati per Excel (.csv)</button>'+
+    '<label class="btn" for="mImpCsv" style="justify-content:center;cursor:pointer">Importa invitati da file (.csv)…</label><input type="file" id="mImpCsv" accept=".csv,text/csv,text/plain" hidden>'+
     (installEvt?'<button class="btn" id="mInst">Installa l’app su questo dispositivo</button>':'')+
     '</div>'+
     ((S.settings&&S.settings.date)?'<div class="form" style="margin-top:22px"><div class="label">Conto alla rovescia</div><div id="cdWrap"><button type="button" class="btn holdbtn" id="cdHold"><i class="fill"></i><span>Tieni premuto per vedere i giorni mancanti</span></button></div></div>':'')+
@@ -905,6 +989,7 @@ function dataMenu(){
   on('mDisc',()=>{ disconnect(); dataMenu(); toast('Google Drive scollegato. I dati restano su questo dispositivo e su Drive.'); });
   on('mExp',()=>exportBackup().catch(()=>toast('Esportazione non riuscita.')));
   on('mCsv',exportCSV);
+  $('mImpCsv').onchange=e=>{const f=e.target.files&&e.target.files[0]; e.target.value=''; if(f){ closeModal(); importCSV(f); }};
   on('mInst',()=>{closeModal(); doInstall();});
   on('mUpd',async()=>{ if(!navigator.onLine){toast('Sei offline: collegati a internet per cercare aggiornamenti.');return;} const b=$('mUpd'); b.disabled=true; b.textContent='Controllo…'; const found=await checkUpdate()||!!$('updBar'); if(found) closeModal(); else { b.disabled=false; b.textContent='Cerca aggiornamenti'; toast('Hai già l’ultima versione ('+APP_VERSION+').'); } });
   $('mImpF').onchange=e=>{const f=e.target.files&&e.target.files[0]; e.target.value=''; if(f) importBackup(f);};
