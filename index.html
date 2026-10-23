@@ -146,7 +146,7 @@ button{cursor:pointer}
 .cnums span{display:inline-flex;align-items:center;gap:4px}
 .cnums b{color:var(--ink);font-weight:600}
 .tip{position:fixed;z-index:70;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12px;padding:6px 9px;border-radius:8px;max-width:240px;box-shadow:var(--shadow)}
-.st-fixed{background-image:none;padding-right:12px;cursor:default;display:inline-block}
+.st.st-fixed{background-image:none;padding-right:12px;cursor:default;display:inline-block}
 .tag.cat{background:var(--accent-soft);color:var(--accent);border-color:transparent}
 .tag.spouse{background:var(--accent);color:var(--accent-ink);border-color:transparent}
 .catlist{display:grid;gap:8px}
@@ -176,10 +176,14 @@ button{cursor:pointer}
 .groups{display:grid;gap:10px}
 .group{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px 6px 8px}
 .person{display:flex;align-items:center;gap:12px;padding:8px}
-.person.companion{margin-left:26px;padding-left:12px;border-left:2px solid var(--line);border-radius:0}
+.group .person+.person{border-top:1px solid var(--line)}
+.linkchips{display:flex;flex-wrap:wrap;gap:6px}
+.linkchip{display:inline-flex;align-items:center;gap:4px;background:var(--accent-soft);color:var(--ink);border-radius:999px;padding:3px 4px 3px 10px;font-size:13px;font-weight:500}
+.linkchip button{background:none;border:0;color:var(--muted);font-size:16px;line-height:1;padding:1px 6px;border-radius:999px}
+.linkchip button:hover{color:var(--st-assente);background:var(--surface)}
+.linkchip.added{outline:1px dashed var(--accent)}
 .person.dim{opacity:.45}
 .avatar{flex:0 0 auto;width:44px;height:44px;border-radius:50%;border:0;padding:0;overflow:hidden;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:15px;display:grid;place-items:center}
-.companion .avatar{width:36px;height:36px;font-size:13px}
 .avatar img{width:100%;height:100%;object-fit:cover;display:block}
 .avatar.child{background:var(--blush);color:var(--blush-ink)}
 .pinfo{flex:1;min-width:0}
@@ -197,7 +201,7 @@ button{cursor:pointer}
 .st-noninvitato{color:var(--st-noninvitato);background-color:var(--st-noninvitato-bg)}
 .st option{background:var(--surface);color:var(--ink)}
 .gactions{display:flex;gap:6px;flex-wrap:wrap;padding:2px 8px 0 64px}
-@media (max-width:480px){.gactions{padding-left:8px}.person.companion{margin-left:14px}}
+@media (max-width:480px){.gactions{padding-left:8px}}
 
 .empty{background:var(--surface);border:1px dashed var(--line);border-radius:14px;padding:28px 20px;text-align:center;color:var(--muted)}
 .empty strong{display:block;color:var(--ink);font-size:16px;margin-bottom:4px}
@@ -286,6 +290,8 @@ button{cursor:pointer}
 body.has-update .fab{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
 body.has-update .toast{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
 @media (min-width:560px){body.has-update .fab,body.has-update .toast{bottom:calc(76px + env(safe-area-inset-bottom,0px))}}
+.toast-act{display:flex;align-items:center;gap:8px;flex-wrap:wrap;pointer-events:auto;width:max-content}
+.toast-act .ta-x{color:var(--bg);opacity:.75}
 .fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:10;border-radius:999px;padding:14px 20px;box-shadow:0 8px 24px rgba(20,40,35,.25)}
 @media (min-width:760px){.fab{display:none}}
 @media (prefers-reduced-motion:no-preference){.modal{animation:up .18s ease-out}@keyframes up{from{transform:translateY(12px);opacity:.6}to{transform:none;opacity:1}}}
@@ -446,6 +452,48 @@ async function put(coll,id,data){
   markDirty();
 }
 const SPOUSE_IDS=['sposo-1','sposo-2'];
+/* Collegamenti alla pari: ogni persona ha links:[id...]; il collegamento vale in entrambe le direzioni. */
+function linkMap(){
+  const m={}; const G=S.guests;
+  Object.keys(G).forEach(id=>m[id]=new Set());
+  Object.values(G).forEach(g=>(Array.isArray(g.links)?g.links:[]).forEach(o=>{ if(o!==g.id&&G[o]){ m[g.id].add(o); m[o].add(g.id); } }));
+  return m;
+}
+function linksOf(id,lm){ return [...((lm||linkMap())[id]||[])]; }
+function groupsOf(lm){
+  const seen=new Set(), out=[];
+  Object.keys(S.guests).forEach(id=>{
+    if(seen.has(id)) return; const comp=[], st=[id]; seen.add(id);
+    while(st.length){ const x=st.pop(); comp.push(S.guests[x]); (lm[x]||[]).forEach(y=>{ if(!seen.has(y)){ seen.add(y); st.push(y); } }); }
+    out.push(comp);
+  });
+  return out;
+}
+// Salva più persone in un colpo solo (un solo ridisegno e una sola sincronizzazione).
+async function putGuests(list){
+  const now=Date.now();
+  for(const g of list){ const v={...clean(g),id:g.id,updatedAt:now}; S.guests[g.id]=v; if(S.deleted.guests) delete S.deleted.guests[g.id]; try{ await idbPut('guests',g.id,v); }catch(e){ toast('Salvataggio non riuscito.'); throw e; } }
+  render(); markDirty();
+}
+// Converte i vecchi +1/figli (parent/role) in collegamenti alla pari e collega tra loro gli sposi.
+async function normalizeLinks(){
+  const G=S.guests, changed={};
+  const touch=g=>{ changed[g.id]=changed[g.id]||{...g,links:[...(Array.isArray(g.links)?g.links:[])]}; return changed[g.id]; };
+  const addL=(a,b)=>{ if(!G[a]||!G[b]||a===b) return; const A=changed[a]||G[a], B=changed[b]||G[b];
+    if(!(A.links||[]).includes(b)) touch(G[a]).links.push(b); if(!(B.links||[]).includes(a)) touch(G[b]).links.push(a); };
+  Object.values(G).forEach(g=>{
+    if(g.parent!==undefined||(g.role&&g.role!=='spouse')){
+      const t=touch(g); if(g.parent&&G[g.parent]) addL(g.id,g.parent);
+      delete t.parent; if(t.role!=='spouse') delete t.role;
+    }
+  });
+  if(G[SPOUSE_IDS[0]]&&G[SPOUSE_IDS[1]]) addL(SPOUSE_IDS[0],SPOUSE_IDS[1]);
+  const list=Object.values(changed);
+  if(!list.length) return false;
+  const now=Date.now();
+  for(const g of list){ const v={...g,updatedAt:now}; delete v.parent; if(v.role!=='spouse') delete v.role; S.guests[g.id]=v; try{ await idbPut('guests',g.id,v); }catch(e){} }
+  markDirty(); return true;
+}
 const isSpouse=g=>!!g&&g.role==='spouse';
 function spouses(){ return SPOUSE_IDS.map(id=>S.guests[id]).filter(Boolean); }
 // Gli sposi esistono sempre: due partecipanti adulti, presenti, categoria "Sposi".
@@ -453,10 +501,10 @@ async function ensureSpouses(){
   const legacy=[S.settings&&S.settings.a, S.settings&&S.settings.b];
   for(let i=0;i<2;i++){
     const id=SPOUSE_IDS[i]; const g=S.guests[id];
-    const fixed={role:'spouse',status:'presente',age:'adult',cat:'sposi',parent:null};
+    const fixed={role:'spouse',status:'presente',age:'adult',cat:'sposi'};
     if(!g){
       const first=(legacy[i]||'').trim();
-      const v={id,first,last:'',note:'',photo:null,created:i+1,updatedAt:first?2:1,...fixed};
+      const v={id,first,last:'',note:'',photo:null,links:[SPOUSE_IDS[1-i]],created:i+1,updatedAt:first?2:1,...fixed};
       S.guests[id]=v; if(S.deleted.guests) delete S.deleted.guests[id];
       try{ await idbPut('guests',id,v); }catch(e){}
     }else if(g.status!=='presente'||g.age!=='adult'||g.role!=='spouse'||g.cat!=='sposi'){
@@ -503,7 +551,7 @@ async function writeAllLocal(){
 
 async function boot(){
   render();
-  try{ idb=await openDB(); await loadAll(); await ensureSpouses(); mode='local'; }
+  try{ idb=await openDB(); await loadAll(); await ensureSpouses(); await normalizeLinks(); mode='local'; }
   catch(e){ idb=null; mode='memory'; toast('Archivio del browser non disponibile: i dati non verranno salvati.'); }
   try{ if(navigator.storage&&navigator.storage.persist) navigator.storage.persist(); }catch(e){}
   render();
@@ -686,7 +734,7 @@ async function syncNow(quiet){
     }
     // riapplica sopra eventuali modifiche fatte durante la sincronizzazione
     const now=snapshot(); const finalState=merge(now,merged);
-    if(canon(finalState)!==canon(now)){ applyMerged(finalState); await ensureSpouses(); await writeAllLocal(); render(); }
+    if(canon(finalState)!==canon(now)){ applyMerged(finalState); await ensureSpouses(); await normalizeLinks(); await writeAllLocal(); render(); }
     for(const pid of used){
       if(!photoURLs[pid]&&merged.photos[pid]){
         try{ const b=await (await api(API+'/files/'+merged.photos[pid]+'?alt=media')).blob(); await idbPut('photos',pid,b); photoURLs[pid]=URL.createObjectURL(b); }catch(e){ if(e.code==='auth') throw e; }
@@ -740,15 +788,15 @@ async function importBackup(file){
       });
       S.settings={...(data.settings||{}),updatedAt:now};
       for(const [k,u] of Object.entries(data.photos||{})){ try{const b=await (await fetch(u)).blob(); await idbPut('photos',k,b); photoURLs[k]=URL.createObjectURL(b); delete S.drivePhotos[k];}catch(e){} }
-      await ensureSpouses(); await writeAllLocal(); render(); markDirty(); toast('Backup ripristinato');
+      await ensureSpouses(); await normalizeLinks(); await writeAllLocal(); render(); markDirty(); toast('Backup ripristinato');
     }catch(e){toast('Ripristino non riuscito.');}
   });
 }
 function exportCSV(){
   const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
-  const rows=[['Nome','Cognome','Età','Categoria','Stato','Ruolo','Collegato a','Note']];
-  [...spouses(),...Object.values(S.guests).filter(g=>!isSpouse(g)).sort(byName)].forEach(g=>{const p=g.parent&&S.guests[g.parent];
-    rows.push([g.first,g.last,g.age==='child'?'Bambino':'Adulto',catName(g.cat)||'Senza categoria',STL[g.status]||g.status,isSpouse(g)?'Sposo/a':g.role==='plus'?'+1':g.role==='child'?'Figlio/a':'Invitato',p?fullName(p):'',g.note]);});
+  const rows=[['Nome','Cognome','Età','Categoria','Stato','Sposo/a','Collegato a','Note']]; const lm=linkMap();
+  [...spouses(),...Object.values(S.guests).filter(g=>!isSpouse(g)).sort(byName)].forEach(g=>{
+    rows.push([g.first,g.last,g.age==='child'?'Bambino':'Adulto',catName(g.cat)||'Senza categoria',STL[g.status]||g.status,isSpouse(g)?'Sì':'',linksOf(g.id,lm).map(o=>fullName(S.guests[o])).join(', '),g.note]);});
   saveFile('invitati-'+stamp()+'.csv',new Blob(['﻿'+rows.map(r=>r.map(q).join(';')).join('\r\n')],{type:'text/csv'}));
 }
 
@@ -759,8 +807,8 @@ window.addEventListener('appinstalled',()=>{installEvt=null; const b=$('installB
 async function doInstall(){ if(!installEvt)return; installEvt.prompt(); try{await installEvt.userChoice;}catch(e){} installEvt=null; $('installBtn').hidden=true; }
 
 /* ---------- aggiornamenti dell'app ---------- */
-// Tieni questo numero uguale a quello in sw.js ('matrimonio-v6' -> '6').
-const APP_VERSION='6';
+// Tieni questo numero uguale a quello in sw.js ('matrimonio-v7' -> '7').
+const APP_VERSION='7';
 let swReg=null, updateRequested=false, pageHash='';
 async function hashText(t){ try{ const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)); return Array.from(new Uint8Array(b)).slice(0,8).map(x=>x.toString(16).padStart(2,'0')).join(''); }catch(e){ return t.length+':'+t.slice(-200); } }
 async function fetchPageHash(){ const r=await fetch('./index.html?check='+Date.now(),{cache:'no-store'}); if(!r.ok) throw 0; return hashText(await r.text()); }
@@ -883,7 +931,7 @@ function costFor(c,hc){
 const perHead=t=>t==='guest'||t==='adult'||t==='child';
 
 /* ---------- rendering ---------- */
-function initials(g){const a=(g.first||'').trim()[0]||'', b=(g.last||'').trim()[0]||''; return (a+b).toUpperCase()||(g.role==='plus'?'+1':'?');}
+function initials(g){const a=(g.first||'').trim()[0]||'', b=(g.last||'').trim()[0]||''; return (a+b).toUpperCase()||'?';}
 function avatarHTML(g,act){
   const src=photoSrc(g.photo);
   const inner=src?'<img src="'+esc(src)+'" alt="" loading="lazy">':esc(initials(g));
@@ -892,9 +940,9 @@ function avatarHTML(g,act){
 function fullName(g){
   const n=((g.first||'')+' '+(g.last||'')).trim();
   if(n) return n;
-  const p=g.parent&&S.guests[g.parent];
-  if(g.role==='plus') return p?'+1 di '+(((p.first||'')+' '+(p.last||'')).trim()||'invitato'):'+1';
-  if(g.role==='child') return p?'Figlio/a di '+(((p.first||'')+' '+(p.last||'')).trim()):'Figlio/a';
+  const ls=(Array.isArray(g.links)?g.links:[]).map(o=>S.guests[o]).filter(Boolean);
+  const other=ls.map(o=>((o.first||'')+' '+(o.last||'')).trim()).find(Boolean);
+  if(other) return 'Da definire (con '+other+')';
   if(isSpouse(g)) return 'Sposo/a '+(SPOUSE_IDS.indexOf(g.id)+1)+' (da completare)';
   return 'Senza nome';
 }
@@ -903,16 +951,14 @@ function statusSelect(g){
   return '<select class="st st-'+esc(g.status)+'" data-act="status" data-id="'+esc(g.id)+'" aria-label="Stato di '+esc(fullName(g))+'">'+
     STATUSES.map(s=>'<option value="'+s.k+'"'+(s.k===g.status?' selected':'')+'>'+s.l+'</option>').join('')+'</select>';
 }
-function personHTML(g,isComp,dim){
+function personHTML(g,dim){
   const hasName=((g.first||'')+(g.last||'')).trim();
   const tags=[];
   if(isSpouse(g)) tags.push('<span class="tag spouse">Sposi</span>');
   else if(catName(g.cat)) tags.push('<span class="tag cat">'+esc(catName(g.cat))+'</span>');
   tags.push('<span class="tag'+(g.age==='child'?' child':'')+'">'+(g.age==='child'?'Bambino':'Adulto')+'</span>');
-  if(g.role==='plus') tags.push('<span>Accompagnatore</span>');
-  if(g.role==='child') tags.push('<span>Figlio/a</span>');
   if(g.note) tags.push('<span>'+esc(g.note.length>50?g.note.slice(0,50)+'…':g.note)+'</span>');
-  return '<div class="person'+(isComp?' companion':'')+(dim?' dim':'')+'">'+avatarHTML(g,'edit-guest')+
+  return '<div class="person'+(dim?' dim':'')+'">'+avatarHTML(g,'edit-guest')+
     '<div class="pinfo"><button class="pname" data-act="edit-guest" data-id="'+esc(g.id)+'">'+(hasName?esc(fullName(g)):'<span class="ph">'+esc(fullName(g))+'</span>')+'</button>'+
     '<div class="pmeta">'+tags.join('')+'</div></div>'+statusSelect(g)+'</div>';
 }
@@ -948,13 +994,14 @@ function catRowHTML(name,d,id,total){
     const st=ui.pop.st, lab=RESP.find(r=>r.k===st).l;
     const before=RESP.slice(0,RESP.findIndex(r=>r.k===st)).reduce((a,r)=>a+d[r.k].n,0);
     const x=((before+d[st].n/2)/inv*100).toFixed(1)+'%';
+    const lmP=linkMap();
     const people=Object.values(S.guests).filter(g=>g.status===st&&(id==='all'||catKey(g)===id))
       .sort((a,b)=>(isSpouse(b)-isSpouse(a))||byName(a,b));
     pop='<div class="segpop" style="--x:'+x+'" role="region" aria-label="'+esc(name+' · '+lab)+'">'+
       '<div class="segpop-head"><span><i class="sw sw-'+st+'"></i> '+esc(name)+' · '+esc(lab)+' ('+people.length+')</span><button class="x" data-act="segclose" aria-label="Chiudi">×</button></div>'+
       '<ul>'+people.map(g=>{
-        const p=g.parent&&S.guests[g.parent];
-        const meta=[g.age==='child'?'bambino':'', id==='all'&&catName(catKey(g))?catName(catKey(g)):'', p&&((g.first||g.last))?(g.role==='plus'?'+1 di ':'figlio/a di ')+((p.first||p.last)||''):''].filter(Boolean).join(' · ');
+        const withN=(g.first||g.last)?linksOf(g.id,lmP).map(o=>S.guests[o]).map(o=>o.first||o.last).filter(Boolean):[];
+        const meta=[g.age==='child'?'bambino':'', id==='all'&&catName(catKey(g))?catName(catKey(g)):'', withN.length?'con '+withN.slice(0,2).join(', ')+(withN.length>2?' +'+(withN.length-2):''):''].filter(Boolean).join(' · ');
         return '<li><button data-act="edit-guest" data-id="'+esc(g.id)+'">'+esc(fullName(g))+'</button>'+(meta?'<small>'+esc(meta)+'</small>':'')+'</li>';
       }).join('')+'</ul></div>';
   }
@@ -987,26 +1034,23 @@ function renderGuests(){
   if(ui.gCat&&ui.gCat!=='sposi'&&ui.gCat!=='_none'&&!cs.find(c=>c.id===ui.gCat)) ui.gCat='';
   gc.innerHTML='<option value="">Tutte le categorie</option><option value="sposi">Sposi</option>'+cs.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join('')+'<option value="_none">Senza categoria</option>';
   gc.value=ui.gCat||'';
-  const mains=all.filter(g=>!g.parent||!S.guests[g.parent]).sort((a,b)=>(isSpouse(b)-isSpouse(a))||(isSpouse(a)?a.created-b.created:byName(a,b)));
-  const kids={}; all.forEach(g=>{if(g.parent&&S.guests[g.parent]){(kids[g.parent]=kids[g.parent]||[]).push(g);}});
+  const lm=linkMap();
+  const named=g=>!!((g.first||'')+(g.last||'')).trim();
+  const ord=(a,b)=>(isSpouse(b)-isSpouse(a))||(isSpouse(a)&&isSpouse(b)?a.created-b.created:0)||(named(b)-named(a))||(a.age==='child')-(b.age==='child')||byName(a,b);
+  const groups=groupsOf(lm).map(gr=>gr.sort(ord)).sort((x,y)=>(x.some(isSpouse)?0:1)-(y.some(isSpouse)?0:1)||byName(x[0],y[0]));
   const q=ui.gSearch.trim().toLowerCase();
   const catOf=g=>isSpouse(g)?'sposi':(g.cat&&catName(g.cat)?g.cat:'_none');
   const match=g=>(!q||fullName(g).toLowerCase().includes(q))&&(!ui.gStatus||g.status===ui.gStatus)&&(!ui.gCat||catOf(g)===ui.gCat);
   const box=$('groups');
   const noGuests=!all.some(g=>!isSpouse(g));
   const html=[];
-  mains.forEach(m=>{
-    const comps=(kids[m.id]||[]).sort((a,b)=>(a.role==='plus'?-1:0)-(b.role==='plus'?-1:0)||(a.created||0)-(b.created||0));
-    const members=[m,...comps];
+  const filtering=!!(q||ui.gStatus||ui.gCat);
+  groups.forEach(members=>{
     if(!members.some(match)) return;
-    const filtering=!!(q||ui.gStatus||ui.gCat);
-    const hasPlus=comps.some(c=>c.role==='plus');
-    html.push('<div class="group">'+personHTML(m,false,filtering&&!match(m))+
-      comps.map(c=>personHTML(c,true,filtering&&!match(c))).join('')+
-      '<div class="gactions">'+(hasPlus||isSpouse(m)?'':'<button class="btn small ghost" data-act="add-plus" data-id="'+esc(m.id)+'">+1</button>')+
-      '<button class="btn small ghost" data-act="add-child" data-id="'+esc(m.id)+'">+ Figlio/a</button></div></div>');
+    html.push('<div class="group">'+members.map(g=>personHTML(g,filtering&&!match(g))).join('')+
+      '<div class="gactions"><button class="btn small ghost" data-act="add-linked" data-id="'+esc(members.map(g=>g.id).join(','))+'">+ Collega una persona</button></div></div>');
   });
-  if(noGuests&&!q&&!ui.gStatus&&!ui.gCat) html.push('<div class="empty"><strong>Nessun invitato ancora</strong>Gli sposi sono già contati come presenti. Aggiungi il primo invitato: potrai poi associare un +1 o dei figli, e i conteggi si aggiornano da soli.<br><button class="btn primary" data-act="new-guest">+ Aggiungi invitato</button></div>');
+  if(noGuests&&!q&&!ui.gStatus&&!ui.gCat) html.push('<div class="empty"><strong>Nessun invitato ancora</strong>Gli sposi sono già contati come presenti. Aggiungi il primo invitato: potrai poi collegargli altre persone (un +1, i figli, il partner…), e i conteggi si aggiornano da soli.<br><button class="btn primary" data-act="new-guest">+ Aggiungi invitato</button></div>');
   box.innerHTML=html.length?html.join(''):'<div class="empty"><strong>Nessun risultato</strong>Nessun invitato corrisponde ai filtri scelti.</div>';
 }
 
@@ -1135,27 +1179,41 @@ function guestForm(g,opts){
   opts=opts||{};
   const isNew=!g.id;
   const sp=isSpouse(g);
-  const title=sp?'Sposo/a':isNew?(g.role==='plus'?'Aggiungi +1':g.role==='child'?'Aggiungi figlio/a':'Nuovo invitato'):'Modifica invitato';
+  const title=sp?'Sposo/a':isNew?((g.links||[]).length?'Nuova persona collegata':'Nuovo invitato'):'Modifica invitato';
   const cats=customCats();
   const catField=sp?'<p class="hint" style="margin:0">Categoria <b>Sposi</b> · adulto · sempre presente</p>':
     field('Categoria','<select id="gCatSel"><option value="">Senza categoria</option>'+cats.map(c=>'<option value="'+esc(c.id)+'"'+(c.id===g.cat?' selected':'')+'>'+esc(c.name)+'</option>').join('')+'<option value="__new">+ Nuova categoria…</option></select>')+
     '<div id="gNewCatWrap" hidden>'+field('Nome della nuova categoria','<input id="gNewCat" autocomplete="off" placeholder="Es. Amici, Famiglia sposa, Colleghi">')+'</div>';
-  const parent=g.parent&&S.guests[g.parent];
   const canPhoto=!!idb;
-  modalState={kind:'guest',g:{...g},photo:{action:'keep'}};
-  openModal('<h3>'+title+'</h3>'+(parent?'<p class="hint" style="margin:-8px 0 12px">'+(g.role==='plus'?'Accompagnatore':'Figlio/a')+' di '+esc(fullName(parent))+'</p>':'')+
+  const lm0=linkMap();
+  const startLinks=isNew?[...new Set((g.links||[]).filter(o=>S.guests[o]))]:linksOf(g.id,lm0);
+  modalState={kind:'guest',g:{...g},photo:{action:'keep'},links:new Set(startLinks),orig:new Set(isNew?[]:startLinks)};
+  openModal('<h3>'+title+'</h3>'+
     '<form class="form" id="gForm" novalidate>'+
     (canPhoto?'<div class="photo"><div id="gAv">'+avatarHTML(g,'')+'</div><div style="display:grid;gap:6px"><div style="display:flex;gap:6px;flex-wrap:wrap"><label class="btn small" for="gPhoto" style="cursor:pointer">'+(g.photo?'Cambia foto':'Aggiungi foto')+'</label>'+
       '<button type="button" class="btn small ghost" id="gPhotoRm"'+(g.photo?'':' hidden')+'>Rimuovi</button></div><span class="hint">Ridotta automaticamente a max 1024 px</span>'+
       '<input type="file" id="gPhoto" accept="image/*" hidden></div></div>':'')+
-    '<div class="row2">'+field('Nome','<input id="gFirst" autocomplete="off" value="'+esc(g.first||'')+'" placeholder="'+(g.role==='plus'?'Anche da definire':'')+'">')+
+    '<div class="row2">'+field('Nome','<input id="gFirst" autocomplete="off" value="'+esc(g.first||'')+'" placeholder="'+(startLinks.length&&!sp?'Anche da definire':'')+'">')+
     field('Cognome','<input id="gLast" autocomplete="off" value="'+esc(g.last||'')+'">')+'</div>'+
     catField+
     (sp?'':field('Età','<div class="seg"><label><input type="radio" name="gAge" value="adult"'+(g.age!=='child'?' checked':'')+'>Adulto</label><label><input type="radio" name="gAge" value="child"'+(g.age==='child'?' checked':'')+'>Bambino</label></div>')+
     field('Stato','<select id="gStatus">'+STATUSES.map(s=>'<option value="'+s.k+'"'+(s.k===g.status?' selected':'')+'>'+s.l+'</option>').join('')+'</select>'))+
+    '<div class="field"><span>Collegato a</span><div class="linkchips" id="gLinks"></div>'+
+      '<select id="gLinkAdd" class="sel" aria-label="Collega a un’altra persona"></select>'+
+      '<span class="hint">Persone che vengono insieme (partner, +1, figli, famiglia). Il collegamento vale in entrambe le direzioni.</span></div>'+
     field('Note','<textarea id="gNote" placeholder="Tavolo, allergie al menù, contatti…">'+esc(g.note||'')+'</textarea>')+
     '<div class="mfoot">'+(isNew||sp?'':'<button type="button" class="btn danger" id="gDel">Elimina</button>')+
     '<div class="right"><button type="button" class="btn" data-act="close">Annulla</button><button type="submit" class="btn primary" id="gSave">Salva</button></div></div></form>');
+  const drawLinks=()=>{
+    const L=modalState.links;
+    $('gLinks').innerHTML=L.size?[...L].map(o=>S.guests[o]).filter(Boolean).sort(byName).map(o=>'<span class="linkchip'+(modalState.orig.has(o.id)?'':' added')+'">'+esc(fullName(o))+(isSpouse(o)&&sp?'':'<button type="button" data-unlink="'+esc(o.id)+'" aria-label="Scollega '+esc(fullName(o))+'">×</button>')+'</span>').join(''):'<span class="hint">Nessun collegamento</span>';
+    const opts=Object.values(S.guests).filter(o=>o.id!==g.id&&!L.has(o.id)).sort((a,b)=>(isSpouse(b)-isSpouse(a))||byName(a,b));
+    $('gLinkAdd').innerHTML='<option value="">+ Collega a…</option>'+opts.map(o=>'<option value="'+esc(o.id)+'">'+esc(fullName(o))+'</option>').join('');
+    $('gLinkAdd').hidden=!opts.length;
+    $('gLinks').querySelectorAll('[data-unlink]').forEach(b=>b.onclick=()=>{ L.delete(b.dataset.unlink); drawLinks(); });
+  };
+  $('gLinkAdd').onchange=e=>{ if(e.target.value){ modalState.links.add(e.target.value); drawLinks(); } };
+  drawLinks();
   if(!sp) $('gCatSel').onchange=e=>{ const n=e.target.value==='__new'; $('gNewCatWrap').hidden=!n; if(n) $('gNewCat').focus(); };
 
   if(canPhoto){
@@ -1179,10 +1237,13 @@ function guestForm(g,opts){
       first:$('gFirst').value.trim(), last:$('gLast').value.trim(),
       age:sp?'adult':((document.querySelector('input[name=gAge]:checked')||{}).value||'adult'),
       status:sp?'presente':$('gStatus').value, note:$('gNote').value.trim(), cat:sp?'sposi':(cur.cat||''),
-      role:cur.role||'main', parent:cur.parent||null,
       created:cur.created||Date.now(), photo:cur.photo||null
     };
-    if(!data.first&&!data.last&&(data.role==='main'||sp)){toast('Inserisci almeno il nome o il cognome.'); btn.disabled=false; btn.textContent='Salva'; return;}
+    if(sp) data.role='spouse';
+    const newLinks=[...st.links].filter(o=>S.guests[o]&&o!==cur.id);
+    if(sp){ const other=SPOUSE_IDS.find(x=>x!==cur.id); if(!newLinks.includes(other)) newLinks.push(other); }
+    data.links=newLinks;
+    if(!data.first&&!data.last&&(!newLinks.length||sp)){toast(sp?'Inserisci almeno il nome o il cognome.':'Inserisci almeno il nome o il cognome (può restare vuoto solo per chi è collegato a qualcuno, es. un +1 da definire).'); btn.disabled=false; btn.textContent='Salva'; return;}
     if(!sp){
       const v=$('gCatSel').value;
       if(v==='__new'){ try{ data.cat=await addCategory($('gNewCat').value); }catch(err){ toast(err.message); btn.disabled=false; btn.textContent='Salva'; return; } }
@@ -1197,24 +1258,52 @@ function guestForm(g,opts){
     const id=cur.id||uid();
     const prevStatus=cur.id?S.guests[cur.id]&&S.guests[cur.id].status:null;
     try{
-      await put('guests',id,data);
-      if(prevStatus&&prevStatus!==data.status&&data.role==='main') await propagateStatus(id,prevStatus,data.status);
+      // aggiorna anche l'altra parte di ogni collegamento aggiunto o tolto
+      const before=new Set(cur.id?linksOf(cur.id):[]), after=new Set(newLinks);
+      const others=[];
+      [...new Set([...before,...after])].forEach(o=>{ const x=S.guests[o]; if(!x) return; const ls=new Set(Array.isArray(x.links)?x.links:[]);
+        const want=after.has(o); if(want&&!ls.has(id)){ ls.add(id); others.push({...x,links:[...ls]}); } else if(!want&&ls.has(id)){ ls.delete(id); others.push({...x,links:[...ls]}); } });
+      await putGuests([{...data,id},...others]);
       if(oldPhoto&&oldPhoto!==data.photo) await deletePhoto(oldPhoto);
       closeModal(); toast(cur.id?'Invitato aggiornato':'Invitato aggiunto');
+      if(prevStatus&&prevStatus!==data.status) await propagateStatus(id,prevStatus,data.status);
     }catch(err){ btn.disabled=false; btn.textContent='Salva'; }
   };
 }
-async function propagateStatus(mainId,from,to){
-  const comps=Object.values(S.guests).filter(c=>c.parent===mainId&&c.status===from);
-  for(const c of comps){ await put('guests',c.id,{...c,status:to}); }
+// Cambiando lo stato di una persona, propone (senza farlo da solo) di applicarlo anche al resto del suo gruppo.
+async function propagateStatus(id,from,to){
+  const lm=linkMap(); const grp=groupsOf(lm).find(gr=>gr.some(x=>x.id===id))||[];
+  const others=grp.filter(c=>c.id!==id&&!isSpouse(c)&&c.status===from);
+  if(!others.length) return;
+  const names=others.map(fullName);
+  toastAction('Applicare “'+STL[to]+'” anche a '+(names.length<=2?names.join(' e '):names[0]+' e altri '+(names.length-1))+'?','Applica',async()=>{
+    const cur=others.map(c=>S.guests[c.id]).filter(c=>c&&c.status===from);
+    if(cur.length){ await putGuests(cur.map(c=>({...c,status:to}))); toast('Aggiornat'+(cur.length===1?'o':'i')+': '+cur.map(fullName).join(', ')); }
+  });
+}
+function toastAction(msg,label,fn){
+  const r=$('toastRoot');
+  r.innerHTML='<div class="toast toast-act" role="status"><span>'+esc(msg)+'</span><button class="btn small primary" id="taGo">'+esc(label)+'</button><button class="btn small ghost ta-x" id="taNo" aria-label="Ignora">×</button></div>';
+  clearTimeout(toast.t); toast.t=setTimeout(()=>{r.innerHTML='';},9000);
+  $('taGo').onclick=()=>{ r.innerHTML=''; fn(); };
+  $('taNo').onclick=()=>{ r.innerHTML=''; };
 }
 function deleteGuest(id){
   const g=S.guests[id]; if(!g)return;
-  const comps=Object.values(S.guests).filter(c=>c.parent===id);
-  confirmBox('Eliminare '+fullName(g)+'?', comps.length?'Verranno eliminati anche '+comps.length+' accompagnatori/figli collegati.':'L’operazione non si può annullare.','Elimina',async()=>{
-    for(const x of [...comps,g]){
-      try{ await remove('guests',x.id); await deletePhoto(x.photo); }catch(e){return;}
-    }
+  const lm=linkMap();
+  const linked=linksOf(id,lm).map(o=>S.guests[o]).filter(Boolean);
+  // chi è senza nome e collegato solo a questa persona (es. un +1 da definire) viene eliminato insieme a lei
+  const orphans=linked.filter(x=>!isSpouse(x)&&!((x.first||'')+(x.last||'')).trim()&&linksOf(x.id,lm).length===1);
+  const stay=linked.filter(x=>!orphans.includes(x));
+  const msg=[orphans.length?(orphans.length===1?'Verrà eliminata anche la persona senza nome collegata.':'Verranno eliminate anche '+orphans.length+' persone senza nome collegate.'):'',
+    stay.length?stay.map(fullName).join(', ')+' rest'+(stay.length===1?'a':'ano')+' in lista.':'','L’operazione non si può annullare.'].filter(Boolean).join(' ');
+  confirmBox('Eliminare '+fullName(g)+'?',msg,'Elimina',async()=>{
+    try{
+      const gone=new Set([id,...orphans.map(x=>x.id)]);
+      const upd=stay.filter(x=>(x.links||[]).some(o=>gone.has(o))).map(x=>({...x,links:x.links.filter(o=>!gone.has(o))}));
+      if(upd.length) await putGuests(upd);
+      for(const x of [g,...orphans]){ await remove('guests',x.id); await deletePhoto(x.photo); }
+    }catch(e){return;}
     toast('Eliminato');
   });
 }
@@ -1364,9 +1453,9 @@ document.addEventListener('click',e=>{
     case 'settings': settingsForm(); break;
     case 'data': dataMenu(); break;
     case 'sync': syncPillClick(); break;
-    case 'new-guest': guestForm({status:'invitato',age:'adult',role:'main'}); break;
-    case 'add-plus':{const p=S.guests[id]; guestForm({status:p?p.status:'invitato',age:'adult',role:'plus',parent:id,last:'',cat:p&&!isSpouse(p)?p.cat||'':''});break;}
-    case 'add-child':{const p=S.guests[id]; guestForm({status:p?(isSpouse(p)?'presente':p.status):'invitato',age:'child',role:'child',parent:id,last:p?p.last||'':'',cat:p&&!isSpouse(p)?p.cat||'':''});break;}
+    case 'new-guest': guestForm({status:'invitato',age:'adult'}); break;
+    case 'add-linked':{ const ids=(id||'').split(',').filter(x=>S.guests[x]); const base=ids.map(x=>S.guests[x]).find(x=>!isSpouse(x))||S.guests[ids[0]];
+      guestForm({status:base?(isSpouse(base)?'presente':base.status):'invitato',age:'adult',links:ids,cat:base&&!isSpouse(base)?base.cat||'':''}); break; }
     case 'edit-guest': if(S.guests[id]) guestForm(S.guests[id]); break;
     case 'gstatus': ui.gStatus=el.dataset.v; renderGuests(); break;
     case 'cats': catsForm(); break;
@@ -1380,7 +1469,7 @@ document.addEventListener('click',e=>{
     case 'toggle-todo':{const t=S.todos[id]; if(t) put('todos',id,{...t,status:t.status==='fatto'?'dafare':'fatto'}).catch(()=>{}); break;}
     case 'new-cost': costForm({type:'fixed'}); break;
     case 'edit-cost': if(S.costs[id]) costForm(S.costs[id]); break;
-    case 'fab': ({invitati:()=>guestForm({status:'invitato',age:'adult',role:'main'}),cose:()=>todoForm({status:'dafare'}),costi:()=>costForm({type:'fixed'})})[ui.tab](); break;
+    case 'fab': ({invitati:()=>guestForm({status:'invitato',age:'adult'}),cose:()=>todoForm({status:'dafare'}),costi:()=>costForm({type:'fixed'})})[ui.tab](); break;
   }
 });
 document.addEventListener('change',async e=>{
@@ -1388,7 +1477,7 @@ document.addEventListener('change',async e=>{
   if(el.dataset.act==='status'){
     const g=S.guests[el.dataset.id]; if(!g)return; const prev=g.status; const to=el.value;
     el.className='st st-'+to;
-    try{ await put('guests',g.id,{...g,status:to}); if(!g.parent) await propagateStatus(g.id,prev,to); }catch(err){ el.value=prev; el.className='st st-'+prev; }
+    try{ await put('guests',g.id,{...g,status:to}); await propagateStatus(g.id,prev,to); }catch(err){ el.value=prev; el.className='st st-'+prev; }
   }else if(el.dataset.act==='tstatus'){
     const t=S.todos[el.dataset.id]; if(!t)return;
     try{await put('todos',t.id,{...t,status:el.value});}catch(err){el.value=t.status;}
